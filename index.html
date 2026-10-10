@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARTZO - Flipkart Style My Orders & Live Tracking Super App</title>
+    <!-- Google Fonts & Confetti Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --accent-orange: #f97316;
+            --accent-purple: #9333ea;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --white: #ffffff;
+            --gray-border: #e2e8f0;
+            --success: #10b981;
+            --whatsapp: #25d366;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: #020617;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            padding: 0.6rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar {
+            background-color: var(--primary-navy);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.15);
+        }
+
+        .navbar .brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .nav-links button {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav-links button:hover, .nav-links button.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-navy), var(--accent-purple));
+            color: var(--white);
+            padding: 3.5rem 2rem;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 { font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 800; }
+        .hero p { color: #cbd5e1; font-size: 1.15rem; margin-bottom: 1.5rem; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover { transform: translateY(-4px); }
+
+        .card-img { height: 170px; background-color: #e2e8f0; overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-body { padding: 1.2rem; }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--primary-navy); }
+        .card-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 0.8rem; }
+        .price { color: var(--accent-orange); font-weight: 800; font-size: 1.2rem; margin-bottom: 1rem; }
+
+        .button-group { display: flex; gap: 0.5rem; }
+
+        .btn {
+            background-color: var(--accent-purple);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-cart { background-color: var(--secondary-navy); }
+        .btn-buy { background-color: var(--accent-orange); }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--primary-navy); }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--gray-border); border-radius: 8px; outline: none; background: #fff;
+        }
+
+        /* Flipkart Style Order Tracker Card */
+        .order-card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .tracker-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        .tracker-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-dot {
+            width: 28px; height: 28px;
+            background: #cbd5e1; color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: bold;
+            margin: 0 auto 0.5rem auto;
+            transition: background 0.3s;
+        }
+
+        .tracker-step.active .step-dot { background: var(--success); }
+        .tracker-step.completed .step-dot { background: var(--primary-navy); }
+
+        .step-label { font-size: 0.8rem; font-weight: 600; color: #64748b; }
+        .tracker-step.active .step-label { color: var(--primary-navy); font-weight: 700; }
+
+        /* Tables & Badges */
+        .table-container { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 1rem 1.2rem; border-bottom: 1px solid var(--gray-border); font-size: 0.95rem; }
+        th { background-color: #f1f5f9; font-weight: 700; color: var(--primary-navy); }
+
+        .badge { padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; background: #dbeafe; color: #1e40af; text-transform: uppercase; }
+        .badge-delivered { background-color: #d1fae5; color: #065f46; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            background: var(--white); padding: 2.5rem; border-radius: 20px; max-width: 500px; width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <span>📍 Gumani Delivery Hub (Cloud Synced)</span>
+        <span>🛒 Cart Items: <strong id="cartCount" style="color:var(--accent-orange);">0</strong></span>
+    </div>
+
+    <nav class="navbar">
+        <a href="#" class="brand">MARTZO</a>
+        <div class="nav-links">
+            <button onclick="switchTab('customer')" class="active" id="btn-customer">🛒 Storefront</button>
+            <button onclick="switchTab('myorders')" id="btn-myorders">📦 My Orders (Tracker)</button>
+            <button onclick="switchTab('seller')" id="btn-seller">🔴 Seller Panel</button>
+            <button onclick="switchTab('admin')" id="btn-admin">⚙️ Admin Panel</button>
+            <button onclick="switchTab('partner')" id="btn-partner">🛵 Delivery Partner</button>
+        </div>
+    </nav>
+
+    <!-- CHECKOUT ADDRESS MODAL -->
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;">Delivery Address & Checkout</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5
