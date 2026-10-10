@@ -1,0 +1,2726 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARTZO - Fixed Admin Login & Courier Partner Manager</title>
+    <!-- Google Fonts, Barcode, Confetti & HTML2PDF Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Libre+Barcode+128&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --accent-orange: #f97316;
+            --accent-purple: #9333ea;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --white: #ffffff;
+            --gray-border: #e2e8f0;
+            --success: #10b981;
+            --whatsapp: #25d366;
+            --danger: #ef4444;
+            --flipkart-blue: #2874f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background-color: var(--primary-navy);
+            color: var(--white);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.15);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .navbar .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-profile-nav {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-profile-nav:hover {
+            background: var(--accent-orange);
+            color: #fff;
+            border-color: var(--accent-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .nav-links button {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-links button:hover, .nav-links button.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .cart-badge {
+            background: var(--accent-orange);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-navy), var(--accent-purple));
+            color: var(--white);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 { font-size: 2.2rem; margin-bottom: 0.3rem; font-weight: 800; }
+        .hero p { color: #cbd5e1; font-size: 0.95rem; }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+        }
+
+        .cat-btn {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            color: var(--text-main);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-btn:hover, .cat-btn.active-cat {
+            background: var(--primary-navy);
+            color: var(--white);
+            border-color: var(--primary-navy);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(0,0,0,0.06); }
+
+        .card-img { height: 120px; background-color: #f1f5f9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-body { padding: 0.8rem; }
+        .card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.1rem; color: var(--primary-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-desc { font-size: 0.75rem; color: #64748b; margin-bottom: 0.4rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .price { color: var(--accent-orange); font-weight: 800; font-size: 1rem; margin-bottom: 0.6rem; }
+
+        .button-group { display: flex; gap: 0.3rem; }
+
+        .btn {
+            background-color: var(--accent-purple);
+            color: var(--white);
+            border: none;
+            padding: 0.45rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-cart { background-color: var(--secondary-navy); }
+        .btn-buy { background-color: var(--accent-orange); }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 0.4rem; text-decoration: none; }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 0.3rem; font-size: 0.85rem; color: var(--primary-navy); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.7rem; border: 1px solid var(--gray-border); border-radius: 6px; outline: none; background: #fff; font-size: 0.9rem;
+        }
+
+        /* 🌟 LIVE TRACKER CARD 🌟 */
+        .pro-tracking-card {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 20px;
+            padding: 1.5rem 1.2rem;
+            color: #fff;
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 1.5rem;
+        }
+        .pro-tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.7rem;
+        }
+        .vertical-tracker { position: relative; padding-left: 2.2rem; margin-top: 0.8rem; }
+        .vertical-tracker::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 10px;
+            bottom: 12px;
+            width: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        .v-step { position: relative; margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .v-step:last-child { margin-bottom: 0; }
+        
+        .v-dot {
+            position: absolute;
+            left: -2.2rem;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #334155;
+            border: 3px solid #0f172a;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .v-step.completed .v-dot {
+            background: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+        }
+        .v-step.active .v-dot {
+            background: #f97316;
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.9);
+            animation: pulseGlowPro 1.2s infinite alternate;
+        }
+
+        @keyframes pulseGlowPro {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.9); }
+            100% { transform: scale(1.3); box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+        }
+
+        .v-title { font-size: 0.95rem; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
+        .v-step.completed .v-title { color: #f8fafc; font-weight: 800; }
+        .v-step.active .v-title { color: #fed7aa; font-weight: 800; }
+        .v-time { font-size: 0.75rem; color: #64748b; font-weight: 600; margin-top: 0.2rem; }
+        .v-step.completed .v-time { color: #cbd5e1; }
+        .v-step.active .v-time { color: #fb923c; }
+        
+        .vehicle-neon-badge {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fdba74;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            animation: bounceVeh 0.8s infinite alternate;
+        }
+        @keyframes bounceVeh { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+
+        /* OUT FOR DELIVERY SECURE OTP HIGHLIGHT CARD */
+        .out-for-delivery-otp-box {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 2px solid #f97316;
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 12px 28px -6px rgba(249, 115, 22, 0.25);
+            text-align: center;
+            animation: pulseCard 2s infinite alternate;
+        }
+        @keyframes pulseCard {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+            100% { box-shadow: 0 0 0 12px rgba(249, 115, 22, 0); }
+        }
+        .otp-display-huge {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #c2410c;
+            letter-spacing: 8px;
+            font-family: monospace;
+            background: #ffffff;
+            display: inline-block;
+            padding: 0.3rem 1.4rem;
+            border-radius: 12px;
+            border: 2px dashed #f97316;
+            margin: 0.5rem 0;
+        }
+
+        .order-list-item {
+            background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s;
+        }
+        .order-list-item:hover { border-color: var(--flipkart-blue); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .order-item-left { display: flex; gap: 0.8rem; align-items: center; }
+        .order-thumb-sm { width: 50px; height: 50px; border-radius: 6px; overflow: hidden; background: #f1f5f9; flex-shrink: 0; }
+        .order-thumb-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+        .help-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .help-card { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
+        .table-container { background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; overflow-x: auto; margin-bottom: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--gray-border); font-size: 0.9rem; }
+        th { background-color: #f1f5f9; font-weight: 700; color: var(--primary-navy); }
+
+        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: #dbeafe; color: #1e40af; text-transform: uppercase; }
+        .badge-delivered { background-color: #d1fae5; color: #065f46; }
+        .badge-cancelled { background-color: #fee2e2; color: #991b1b; }
+        .badge-return { background-color: #fef3c7; color: #92400e; }
+
+        /* Dynamic Star Rating */
+        .star-rating-container { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; }
+        .star-rating-btn {
+            font-size: 2.2rem;
+            cursor: pointer;
+            color: #cbd5e1;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+        }
+        .star-rating-btn:hover { transform: scale(1.3); }
+
+        /* GORGEOUS COLORFUL MODALS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .modal-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            padding: 2.5rem 2rem; border-radius: 28px; max-width: 540px; width: 92%;
+            box-shadow: 0 35px 70px -15px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(255,255,255,0.8);
+            max-height: 90vh; overflow-y: auto;
+            transform: scale(0.8) translateY(25px); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .modal-overlay.show .modal-card { transform: scale(1) translateY(0); }
+
+        .modal-hero-icon {
+            width: 85px; height: 85px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.6rem; margin: 0 auto 1.4rem auto;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+            animation: bounceVeh 1.5s infinite alternate;
+        }
+
+        .theme-feedback {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fef3c7 100%);
+            border: 2px solid #fdba74;
+            text-align: center;
+        }
+        .theme-feedback .modal-hero-icon {
+            background: linear-gradient(135deg, #f97316, #eab308);
+            color: #fff;
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.35);
+        }
+
+        .theme-success {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #86efac;
+            text-align: center;
+        }
+        .theme-success .modal-hero-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.35);
+        }
+
+        .theme-alert {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #fda4af;
+            text-align: center;
+        }
+        .theme-alert .modal-hero-icon {
+            background: linear-gradient(135deg, #ef4444, #e11d48);
+            color: #fff;
+            box-shadow: 0 15px 30px rgba(239, 68, 68, 0.35);
+        }
+
+        .theme-info {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 2px solid #c4b5fd;
+            text-align: center;
+        }
+        .theme-info .modal-hero-icon {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff;
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.35);
+        }
+
+        .footer-gumani {
+            background: var(--primary-navy); color: #94a3b8; padding: 2rem 1.5rem; text-align: center; margin-top: 3rem; border-radius: 12px 12px 0 0; font-size: 0.9rem;
+        }
+        .footer-gumani strong { color: var(--accent-orange); }
+
+        .partner-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid var(--gray-border);
+            font-size: 0.85rem;
+            margin: 0.2rem;
+        }
+        .partner-chip button {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        #printableLabelArea {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            width: 380px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            padding: 14px;
+            color: #000000;
+            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            display: block;
+            z-index: -100;
+        }
+        .label-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 6px; }
+        .label-barcode { font-family: 'Libre Barcode 128', cursive; font-size: 46px; line-height: 1; text-align: center; margin: 6px 0; }
+        .label-section { border-bottom: 1px dashed #000; padding: 6px 0; font-size: 11px; line-height: 1.4; }
+
+        @media (min-width: 1024px) {
+            .container { padding: 0 2rem; }
+            .grid { grid-template-columns: repeat(5, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="#" class="brand">MARTZO</a>
+            <button class="btn-profile-nav" onclick="openProfileAuthModal()">
+                <span>👤</span> <span id="navProfileBtnText">My Profile</span>
+            </button>
+        </div>
+        <div class="nav-links">
+            <button onclick="switchTab('customer')" class="active" id="btn-customer">🛒 Store</button>
+            <button onclick="switchTab('cart')" id="btn-cart">🛍️ Cart <span id="cartBadgeCount" class="cart-badge">0</span></button>
+            <button onclick="switchTab('myorders')" id="btn-myorders">📦 My Orders</button>
+            <button onclick="switchTab('helpcenter')" id="btn-helpcenter">🆘 Help</button>
+            <button onclick="switchTab('seller')" id="btn-seller">🔴 Seller Portal</button>
+            <button onclick="switchTab('admin')" id="btn-admin">⚙️ Admin</button>
+            <button onclick="switchTab('partner')" id="btn-partner">🛵 Partner</button>
+        </div>
+    </nav>
+
+    <!-- 🌟 NEW MY PROFILE (LOGIN / REGISTER WITH WHATSAPP OTP VERIFICATION) MODAL 🌟 -->
+    <div id="profileAuthModal" class="modal-overlay">
+        <div class="modal-card">
+            <!-- State 1: Already Logged In -->
+            <div id="profileLoggedInView" style="display:none; text-align:center;">
+                <div class="modal-hero-icon" style="background:#e0e7ff; color:#4f46e5;">👤</div>
+                <h2 style="font-size:1.5rem; font-weight:800; color:var(--primary-navy); margin-bottom:0.4rem;">Customer Profile</h2>
+                <div style="background:#f8fafc; border:1px solid var(--gray-border); border-radius:14px; padding:1.2rem; margin:1rem 0; text-align:left;">
+                    <p style="font-size:0.9rem; margin-bottom:0.4rem;">🆔 <strong>Customer ID:</strong> <span id="profCustIdDisplay" style="color:var(--accent-orange); font-weight:bold;"></span></p>
+                    <p style="font-size:0.9rem; margin-bottom:0.4rem;">📱 <strong>Phone Number:</strong> <span id="profCustPhoneDisplay"></span></p>
+                    <p style="font-size:0.9rem;">📍 <strong>Service Area:</strong> Gumani (816101)</p>
+                </div>
+                <div style="display:flex; gap:0.6rem;">
+                    <button class="btn" style="background:#cbd5e1; color:#334155; padding:0.8rem;" onclick="closeProfileAuthModal()">Close</button>
+                    <button class="btn btn-buy" style="background:var(--danger); padding:0.8rem;" onclick="logoutCustomerProfile()">Logout 🚪</button>
+                </div>
+            </div>
+
+            <!-- State 2: Login or Register Screen -->
+            <div id="profileLoggedOutView">
+                <div style="text-align:center; margin-bottom:1.5rem;">
+                    <div style="width:75px; height:75px; background:linear-gradient(135deg, #f97316, #ea580c); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.2rem; margin:0 auto 1rem auto; box-shadow:0 10px 25px rgba(249,115,22,0.3);">🔐</div>
+                    <h2 style="font-size:1.5rem; font-weight:800; color:var(--primary-navy); margin-bottom:0.3rem;">MARTZO Account Access</h2>
+                    <p style="color:#64748b; font-size:0.85rem;">Login with existing credentials or create a new verified account via WhatsApp OTP.</p>
+                </div>
+
+                <!-- Registration Step 1: Phone & Password Input -->
+                <div id="regStepOneBox">
+                    <div class="form-group"><label>Mobile Number (WhatsApp)</label><input type="text" id="profInputPhone" placeholder="e.g. 9876543210" maxlength="10"></div>
+                    <div class="form-group"><label>Set Account Password</label><input type="password" id="profInputPass" placeholder="Enter secure password"></div>
+                    <div style="display:flex; gap:0.6rem; margin-top:1.2rem;">
+                        <button class="btn" style="background:#cbd5e1; color:#334155; padding:0.8rem;" onclick="closeProfileAuthModal()">Cancel</button>
+                        <button class="btn btn-cart" style="padding:0.8rem;" onclick="handleDirectLogin()">Login</button>
+                        <button class="btn btn-buy" style="padding:0.8rem;" onclick="requestWhatsAppRegistrationOtp()">New User? Get WhatsApp OTP 📲</button>
+                    </div>
+                </div>
+
+                <!-- Registration Step 2: OTP Verification Box -->
+                <div id="regStepTwoOtpBox" style="display:none; background:#fffbeb; border:1px solid #fde68a; padding:1.2rem; border-radius:16px; margin-top:1rem;">
+                    <p style="font-size:0.85rem; color:#92400e; font-weight:700; margin-bottom:0.5rem;">
+                        💬 WhatsApp message opened! Send credentials to Admin (`9798377142`) to receive your 4-digit verification OTP.
+                    </p>
+                    <div class="form-group" style="margin-bottom:0.8rem;">
+                        <label style="color:#92400e;">Enter Admin Provided 4-Digit OTP</label>
+                        <input type="text" id="profEnteredOtp" placeholder="XXXX" maxlength="4" style="font-size:1.4rem; letter-spacing:8px; text-align:center; font-weight:bold; color:var(--primary-navy);">
+                    </div>
+                    <div style="display:flex; gap:0.6rem;">
+                        <button class="btn" style="background:#cbd5e1; color:#334155; padding:0.7rem;" onclick="resetProfileForm()">Back</button>
+                        <button class="btn btn-buy" style="background:var(--success); padding:0.7rem;" onclick="verifyCustomerOtpAndRegister()">Verify & Create Account 🚀</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PASSWORD LOCK MODAL -->
+    <div id="adminLoginModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center;">
+            <div style="width: 75px; height: 75px; background: #fee2e2; color: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.2rem auto;">🔒</div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;">Admin Restricted Area</h2>
+            <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem;">Enter the secure admin password (`admin123`) to unlock management dashboard.</p>
+            
+            <div class="form-group" style="text-align: left;"><label>Admin Secret Password</label><input type="password" id="adminPasswordInput" placeholder="Enter password"></div>
+            <div style="display: flex; gap: 0.8rem;">
+                <button class="btn" style="background: #cbd5e1; color: #334155; padding: 0.8rem;" onclick="closeAdminLoginModal()">Cancel</button>
+                <button class="btn btn-buy" style="background: var(--danger); padding: 0.8rem;" onclick="verifyAdminPassword()">Unlock Admin 🔑</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHIPPING LABEL MODAL (PREVIEW & DOWNLOAD PDF) -->
+    <div id="shippingLabelModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center; background: white; border: 2px solid var(--primary-navy);">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.3rem;">🏷️ MARTZO Official Shipping Label</h2>
+            <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;">Gumani Hub (Pincode: 816101)</p>
+            
+            <div style="background:#f8fafc; border:1px solid var(--gray-border); padding:1rem; border-radius:12px; text-align:left; margin-bottom:1rem; font-size:0.85rem;">
+                <p><strong>Order ID:</strong> <span id="lblOrderId">MZ-10001</span></p>
+                <p><strong>Customer:</strong> <span id="lblCustName">Rohit Sharma</span></p>
+                <p><strong>Address:</strong> <span id="lblCustAddress">Gumani Main Road - 816101</span></p>
+                <p><strong>Item & Qty:</strong> <span id="lblItemName">Tomato</span> (Qty: <span id="lblQty">1</span>) - <span id="lblPrice">₹40</span></p>
+                <p><strong>Payment:</strong> <span id="lblPayMode">Prepaid</span> | <strong>Delivery:</strong> <span id="lblFee">Free</span></p>
+            </div>
+
+            <div style="background:white; border:2px dashed #0f172a; padding:1.2rem; border-radius:12px; margin-bottom:1.2rem; display:inline-block; text-align:center;">
+                <div style="font-family:'Libre Barcode 128', cursive; font-size:42px;" id="lblBarcodeDisplay">MZ-10001</div>
+                <div style="font-family:monospace; font-size:0.85rem; font-weight:bold; color:var(--primary-navy);">QR ID: <span id="lblQrCodeText">MZ-SKU-9982</span></div>
+            </div>
+
+            <div style="display:flex; gap:0.8rem;">
+                <button class="btn" style="background:#cbd5e1; color:#334155; padding: 0.8rem;" onclick="closeShippingLabelModal()">Close</button>
+                <button class="btn btn-buy" style="padding: 0.8rem;" onclick="executeRealPdfDownload()">Download Official PDF Label 🖨️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NON-BLANK RENDERING TEMPLATE FOR HTML2PDF ENGINE -->
+    <div id="printableLabelArea">
+        <div class="label-header">
+            <div>
+                <strong style="font-size:16px; font-weight:800; color:#000;">MARTZO EXPRESS</strong>
+                <div style="font-size:9px; color:#333;">HUB: GUMANI JHARKHAND - 816101</div>
+            </div>
+            <div style="text-align:right;">
+                <span style="border:1px solid #000; padding:2px 6px; font-weight:bold; font-size:10px;" id="pdfPayBadge">PREPAID</span>
+            </div>
+        </div>
+
+        <div class="label-barcode" id="pdfBarcode">MZ-10001</div>
+        <div style="text-align:center; font-size:9px; font-weight:bold; letter-spacing:1px; margin-bottom:4px;" id="pdfTrackingText">TRACKING: MZ-10001</div>
+
+        <div class="label-section">
+            <strong>DELIVERY TO (CUSTOMER):</strong><br>
+            <span style="font-size:13px; font-weight:bold;" id="pdfCustName">Rohit Sharma</span><br>
+            <span id="pdfCustAddress">Gumani Main Road, Ward 2</span><br>
+            <strong>PINCODE: 816101 | PHONE: <span id="pdfCustPhone">9876543210</span></strong>
+        </div>
+
+        <div class="label-section">
+            <strong>RETURN / SELLER ADDRESS:</strong><br>
+            <span>MARTZO Central Hub, Gumani Main Chowk, Sahibganj, 816101</span>
+        </div>
+
+        <div class="label-section" style="display:flex; justify-content:space-between;">
+            <div>
+                <strong>ITEM:</strong> <span id="pdfItemTitle">Cotton T-Shirt</span><br>
+                <strong>QTY:</strong> 1 | <strong>WEIGHT:</strong> 0.35 KG
+            </div>
+            <div style="text-align:right;">
+                <strong>TOTAL AMOUNT:</strong><br>
+                <span style="font-size:14px; font-weight:bold;" id="pdfAmount">₹349</span>
+            </div>
+        </div>
+
+        <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:8px; color:#555;">
+                Routing: GMN-LOCAL-STANDARD<br>
+                Official Gumani Logistics Hub<br>
+                =======================
+            </div>
+            <div style="border:1px solid #000; padding:4px 8px; font-size:14px; font-weight:bold;">🔲 MARTZO-OK</div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAILS POPUP MODAL -->
+    <div id="productDetailModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left;">
+            <div id="modalProductImage" style="height: 220px; background: #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 1.2rem;">
+                <img id="detailImg" src="" alt="Product" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <div id="modalProductCat" style="font-size: 0.75rem; font-weight: 800; color: var(--accent-purple); text-transform: uppercase;"></div>
+                <div id="modalReturnBadge" class="badge" style="background:#e0e7ff; color:#3730a3;"></div>
+            </div>
+            <h2 id="detailTitle" style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;"></h2>
+            <div id="detailPrice" style="color: var(--accent-orange); font-weight: 800; font-size: 1.4rem; margin-bottom: 1rem;"></div>
+            <div id="detailDeliveryFee" style="font-size: 0.85rem; font-weight: 700; color: var(--success); margin-bottom: 1rem; background:#f0fdf4; padding:0.4rem 0.8rem; border-radius:6px; display:inline-block;"></div>
+            <p id="detailDesc" style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;"></p>
+            
+            <div id="productReviewsSection" style="background:#f8fafc; padding:1rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--gray-border);">
+                <p style="font-size:0.85rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.4rem;">⭐ Customer Ratings & Reviews:</p>
+                <div id="productReviewsList" style="font-size:0.85rem; color:#475569;">No ratings yet. Be the first to review!</div>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem;">
+                <button class="btn btn-cart" style="padding: 0.7rem;" onclick="addCurrentProductToCartFromModal()">Add to Cart</button>
+                <button class="btn btn-buy" style="padding: 0.7rem;" onclick="buyCurrentProductFromModal()">Buy Now 🚀</button>
+            </div>
+            <button class="btn" style="background: #e2e8f0; color: #334155; margin-top: 0.8rem; padding: 0.7rem;" onclick="closeProductDetailModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- 🌟 DETAILED ORDER TRACKING & RETURN MODAL 🌟 -->
+    <div id="orderDetailsModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-border); padding-bottom:1rem; margin-bottom:1rem;">
+                <div>
+                    <h3 id="modalOrderId" style="font-size:1.25rem; font-weight:800; color:var(--primary-navy);"></h3>
+                    <p id="modalOrderDate" style="font-size:0.8rem; color:#64748b;"></p>
+                </div>
+                <div id="modalOrderStatusBadge"></div>
+            </div>
+
+            <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1.2rem; background:#f8fafc; padding:0.9rem; border-radius:14px; border:1px solid var(--gray-border);">
+                <img id="modalOrderImg" src="" style="width:65px; height:65px; object-fit:cover; border-radius:10px;">
+                <div>
+                    <h4 id="modalOrderItemName" style="font-size:1.05rem; font-weight:700; color:var(--primary-navy);"></h4>
+                    <p style="font-size:0.85rem; color:#64748b;">Price: <strong id="modalOrderPrice"></strong> | Payment: <span id="modalOrderMode"></span></p>
+                    <p style="font-size:0.75rem; color:var(--accent-purple); font-weight:700;" id="modalOrderReturnPolicyText"></p>
+                </div>
+            </div>
+
+            <div style="font-size:0.85rem; color:#475569; margin-bottom:1.2rem;">
+                <p>📍 <strong>Delivery Address:</strong> <span id="modalOrderAddress"></span></p>
+                <p style="margin-top:0.3rem;">🛵 <strong>Assigned Partner:</strong> <span id="modalOrderPartner"></span></p>
+            </div>
+
+            <!-- 🔑 OUT FOR DELIVERY OTP DISPLAY CARD (IN TRACKING SECTION) -->
+            <div id="modalOutForDeliveryOtpContainer" class="out-for-delivery-otp-box" style="display:none;">
+                <span class="badge" style="background:#ea580c; color:#fff; font-size:0.8rem; letter-spacing:0.5px;">🔑 YOUR SECURE DELIVERY OTP</span>
+                <div id="modalOrderOtpText" class="otp-display-huge">----</div>
+                <p style="font-size:0.9rem; color:#9a3412; font-weight:700; line-height:1.5;">
+                    "Please provide this OTP to our delivery executive upon arrival to safely receive your parcel. Only this system OTP will verify delivery."
+                </p>
+            </div>
+
+            <!-- PRO SATELLITE TRACKER CARD -->
+            <div class="pro-tracking-card">
+                <div class="pro-tracking-header">
+                    <span style="font-size:0.85rem; font-weight:800; letter-spacing:0.5px; color:#fdba74;">📡 LIVE LOGISTICS SATELLITE ENGINE</span>
+                    <span style="font-size:0.75rem; color:#94a3b8;" id="modalProStatusCategory">ACTIVE SHIPMENT</span>
+                </div>
+                <div class="vertical-tracker" id="modalTimelineContainer"></div>
+            </div>
+
+            <!-- CUSTOMER CANCEL BUTTON -->
+            <div id="modalCustomerCancelSection" style="margin-bottom:1rem; display:none;">
+                <button class="btn" style="background:var(--danger); border-radius:12px; padding:0.8rem; font-size:0.9rem;" onclick="customerCancelOrder()">❌ Cancel Order (Allowed before preparation)</button>
+            </div>
+
+            <!-- CUSTOMER RETURN INITIATION BUTTON -->
+            <div id="modalReturnInitiateSection" style="margin-bottom:1rem; display:none;">
+                <button class="btn" style="background:#b45309; border-radius:12px; padding:0.8rem; font-size:0.9rem;" onclick="openReturnRequestForm()">🔄 Request Product Return / Replacement</button>
+            </div>
+
+            <!-- RETURN REASON FORM -->
+            <div id="returnReasonBox" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:1.2rem; border-radius:16px; margin-bottom:1rem;">
+                <h4 style="color:#92400e; font-size:0.95rem; font-weight:800; margin-bottom:0.6rem;">Select Reason for Return:</h4>
+                <select id="returnReasonSelect" style="width:100%; padding:0.6rem; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:0.6rem; font-size:0.9rem;">
+                    <option value="Damaged / Defective Product">Damaged / Defective Product</option>
+                    <option value="Wrong Item Received">Wrong Item Received</option>
+                    <option value="Size / Fit Issue">Size / Fit Issue</option>
+                    <option value="Quality not as expected">Quality not as expected</option>
+                </select>
+                <textarea id="returnCommentText" rows="2" placeholder="Briefly describe the issue..." style="width:100%; padding:0.6rem; border:1px solid #cbd5e1; border-radius:8px; font-size:0.9rem; margin-bottom:0.6rem;"></textarea>
+                <div style="display:flex; gap:0.6rem;">
+                    <button class="btn" style="background:#94a3b8; padding:0.6rem;" onclick="closeReturnRequestForm()">Cancel</button>
+                    <button class="btn" style="background:#b45309; padding:0.6rem;" onclick="submitReturnRequestAction()">Submit Return Request 🚀</button>
+                </div>
+            </div>
+
+            <!-- POST-DELIVERY COLOR-CODED STAR RATING & FEEDBACK -->
+            <div id="modalRatingSection" style="display:none; background:#ffffff; border:1px solid var(--gray-border); padding:1.4rem; border-radius:18px; margin-bottom:1rem; box-shadow:0 6px 16px rgba(0,0,0,0.04);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                    <p style="font-weight:800; color:var(--primary-navy); font-size:1rem;">⭐ Rate & Review Your Experience:</p>
+                    <span id="starRatingLabel" style="font-size:0.85rem; font-weight:700; color:#64748b;">Tap stars</span>
+                </div>
+                <div class="star-rating-container" id="starRatingContainer">
+                    <span class="star-rating-btn" onclick="setDynamicRating(1)">★</span>
+                    <span class="star-rating-btn" onclick="setDynamicRating(2)">★</span>
+                    <span class="star-rating-btn" onclick="setDynamicRating(3)">★</span>
+                    <span class="star-rating-btn" onclick="setDynamicRating(4)">★</span>
+                    <span class="star-rating-btn" onclick="setDynamicRating(5)">★</span>
+                </div>
+                <textarea id="reviewCommentText" rows="2" placeholder="Write feedback about product quality or delivery speed..." style="width:100%; padding:0.7rem; border:1px solid var(--gray-border); border-radius:10px; font-size:0.9rem; margin-bottom:0.8rem;"></textarea>
+                <button class="btn btn-buy" style="border-radius:10px; padding:0.75rem; font-size:0.9rem;" onclick="submitProductReview()">Submit Feedback & Review</button>
+            </div>
+
+            <!-- POST-DELIVERY NEED HELP SECTION -->
+            <div id="modalDeliveredHelpSection" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; padding:1rem; border-radius:14px; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.9rem; color:#166534; font-weight:700;">Need assistance with this order?</span>
+                <button class="btn btn-whatsapp" style="width:auto; padding:0.5rem 1rem; font-size:0.85rem; border-radius:10px;" onclick="connectSupportAgent('Assistance on Order ' + viewingOrderId)">💬 Need Help?</button>
+            </div>
+
+            <button class="btn" style="background:var(--secondary-navy); border-radius:14px; padding:0.9rem; font-size:0.95rem;" onclick="closeOrderDetailsModal()">Close Tracker</button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT ADDRESS MODAL -->
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.4rem;">Delivery Address & Checkout</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.2rem;">Enter your exact address and pincode (816101) for Gumani shipment.</p>
+            
+            <div class="form-group"><label>Full Name</label><input type="text" id="checkoutName" placeholder="e.g. Amit Kumar"></div>
+            <div class="form-group"><label>WhatsApp Number</label><input type="text" id="checkoutPhone" placeholder="+91 9876543210"></div>
+            <div class="form-group"><label>Complete Address (Gumani)</label><textarea id="checkoutAddress" rows="2" placeholder="House no, Street, Landmark..."></textarea></div>
+            <div class="form-group"><label>Pincode</label><input type="text" id="checkoutPincode" value="816101" readonly style="background:#f1f5f9; font-weight:700;"></div>
+            
+            <div class="form-group">
+                <label>Select Payment Mode</label>
+                <select id="checkoutPaymentMode">
+                    <option value="Prepaid">Prepaid Order (Requires Delivery OTP)</option>
+                    <option value="COD">Cash on Delivery (COD - No OTP needed)</option>
+                </select>
+            </div>
+
+            <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1.2rem; border: 1px solid var(--gray-border);">
+                <p style="font-size: 0.9rem; font-weight: 700; color: var(--primary-navy);">Item: <span id="checkoutItemName" style="color:var(--accent-orange);"></span></p>
+                <p style="font-size: 0.9rem; font-weight: 700; color: #475569;">Delivery Fee: <span id="checkoutDeliveryFeeText" style="color:var(--success);">Free</span></p>
+                <p style="font-size: 1.05rem; font-weight: 800; color: var(--primary-navy); margin-top:0.3rem;">Total Payable: <span id="checkoutItemPrice" style="color:var(--success);"></span></p>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem;">
+                <button class="btn" style="background:#cbd5e1; color:#334155; padding: 0.8rem;" onclick="closeCheckoutModal()">Cancel</button>
+                <button class="btn btn-buy" style="padding: 0.8rem;" onclick="confirmAndSendWhatsApp()">Place Order 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 UNIVERSAL COLORFUL POP-UP MODAL 🌟 -->
+    <div id="universalPopupModal" class="modal-overlay">
+        <div id="universalPopupCard" class="modal-card">
+            <div id="universalPopupIcon" class="modal-hero-icon">✨</div>
+            <h2 id="universalPopupTitle" style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.6rem;">Notice</h2>
+            <p id="universalPopupMessage" style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.8rem; font-weight: 600;"></p>
+            <div id="universalPopupCustomContent" style="margin-bottom: 1.5rem;"></div>
+            <button id="universalPopupBtn" class="btn" style="border-radius: 14px; padding: 0.9rem; font-size: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.15);" onclick="closeUniversalPopup()">Got It 🚀</button>
+        </div>
+    </div>
+
+    <!-- 1. CUSTOMER STOREFRONT -->
+    <div id="tab-customer" class="container tab-content active">
+        <header class="hero">
+            <h1>MARTZO STORE <span id="customerUserBadge" style="font-size:0.8rem; background:rgba(255,255,255,0.2); padding:0.2rem 0.6rem; border-radius:6px; display:inline-block; margin-left:10px;"></span></h1>
+            <p>Everything You Need, One App. Fast local delivery in Gumani (816101).</p>
+        </header>
+
+        <div class="category-tabs">
+            <button class="cat-btn active-cat" onclick="filterStoreCategory('All', this)">🌟 All</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Grocery', this)">🥦 Groceries</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Food', this)">🍔 Food</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Clothing', this)">👕 Clothing</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Electronics', this)">🔌 Electronics</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Services', this)">🛠️ Services</button>
+        </div>
+
+        <h2 id="currentCategoryTitle" style="margin-bottom: 1.2rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">All Products</h2>
+        <div class="grid" id="customerProductGrid"></div>
+    </div>
+
+    <!-- 2. CART TAB -->
+    <div id="tab-cart" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">🛍️ Your Shopping Cart</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">Review items added to your cart before checkout.</p>
+        
+        <div style="background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div id="cartItemsContainer" style="margin-bottom:1.5rem; color:#64748b;">Your cart is empty.</div>
+            <div id="cartCheckoutSec" style="display:none; border-top:1px solid var(--gray-border); padding-top:1rem;">
+                <p style="font-weight:700; font-size: 1.1rem; margin-bottom:1rem;">Total Amount: <span id="fullCartTotal" style="color:var(--accent-orange);">₹0</span></p>
+                <button class="btn btn-buy" style="max-width: 300px; border-radius: 12px; padding: 0.8rem;" onclick="openCartCheckoutModal()">Proceed to Checkout 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MY ORDERS SECTION -->
+    <div id="tab-myorders" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">📦 My Orders</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">Tap on any order to view satellite tracking, download invoice, or view Delivery OTP.</p>
+        <div id="myOrdersContainer"></div>
+    </div>
+
+    <!-- 4. HELP CENTER SECTION -->
+    <div id="tab-helpcenter" class="container tab-content">
+        <header class="hero" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+            <h1>MARTZO HELP CENTER</h1>
+            <p>Need help with Return, Refund, Delivery or Technical Error? We are here 24/7.</p>
+        </header>
+
+        <div class="help-grid">
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">🔄 Return & Refund</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Got a damaged item or eligible return? Food/Grocery items are non-returnable.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Return / Refund Query')" style="border-radius:10px;">💬 Connect Support for Return</button>
+            </div>
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">🛵 Delivery Delay / Status</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Check your shipment progress or coordinate with your delivery partner.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Delivery Assistance')" style="border-radius:10px;">💬 Connect Support for Delivery</button>
+            </div>
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">⚙️ Technical Error / App Bug</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Facing issues placing orders or uploading products? Report a technical bug.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Technical Error')" style="border-radius:10px;">💬 Report Bug to Support</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. SELLER PORTAL -->
+    <div id="tab-seller" class="container tab-content">
+        <header class="hero" style="background: linear-gradient(135deg, #7c2d12, #c2410c);">
+            <h1>SELLER VENDOR PORTAL</h1>
+            <p>Admin द्वारा कन्फर्म होने के बाद ही ऑर्डर यहाँ दिखेगा। लेबल डाउनलोड या सिर्फ टच करके भी पैक कर सकते हैं।</p>
+        </header>
+
+        <div id="sellerAuthBox" style="background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); max-width:500px; margin:0 auto 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <h3 style="font-size:1.2rem; font-weight:800; color:var(--primary-navy); margin-bottom:1rem;">Vendor Login / Registration</h3>
+            <div class="form-group"><label>Vendor ID</label><input type="text" id="sellerLoginId" placeholder="e.g. vendor_gumani_1"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="sellerLoginPass" placeholder="Enter password"></div>
+            <button class="btn btn-buy" style="border-radius:10px; padding:0.7rem;" onclick="handleSellerLoginOrRegister()">Login / Register Vendor ID</button>
+        </div>
+
+        <div id="sellerDashboardBox" style="display:none; background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); max-width:700px; margin:0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--gray-border); padding-bottom:0.8rem;">
+                <h3 style="font-size:1.1rem; color:var(--primary-navy);">Welcome, Vendor <span id="activeVendorDisplay" style="color:var(--accent-orange);"></span></h3>
+                <button class="btn" style="background:var(--danger); width:auto; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="logoutSeller()">Logout</button>
+            </div>
+
+            <div class="form-group"><label>Product Name</label><input type="text" id="sellerProductName" placeholder="e.g. Cotton T-Shirt"></div>
+            <div class="form-group">
+                <label>Select Category</label>
+                <select id="sellerCategory" onchange="autoDetectReturnPolicy(this.value)">
+                    <option value="Grocery">Groceries & Vegetables (Non-Returnable)</option>
+                    <option value="Food">Food & Restaurants (Non-Returnable)</option>
+                    <option value="Clothing">Clothing & Fashion (Returnable)</option>
+                    <option value="Electronics">Electronics & Mobiles (Returnable)</option>
+                    <option value="Services">Home Services (Non-Returnable)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Return Policy Status</label><input type="text" id="sellerReturnPolicy" value="Non-Returnable (Food/Grocery)" readonly style="background:#f1f5f9; font-weight:700;"></div>
+            <div class="form-group"><label>Full Description</label><textarea id="sellerProductDesc" rows="3" placeholder="Write specifications..."></textarea></div>
+            <div class="form-group"><label>Price (₹)</label><input type="text" id="sellerPrice" placeholder="₹120"></div>
+            
+            <div class="form-group">
+                <label>Delivery Fee Option</label>
+                <select id="sellerDeliveryType" onchange="toggleDeliveryFeeInput(this.value)">
+                    <option value="Free">✨ Free Delivery (₹0)</option>
+                    <option value="Custom">📦 Custom Delivery Fee</option>
+                </select>
+            </div>
+            <div class="form-group" id="customFeeGroup" style="display:none;">
+                <label>Delivery Charge Amount (₹)</label><input type="text" id="sellerCustomFee" placeholder="e.g. ₹20">
+            </div>
+
+            <div class="form-group"><label>Product Photo</label><input type="file" id="sellerImageFile" accept="image/*" style="padding:0.4rem; background:#f8fafc;"></div>
+            <button class="btn btn-buy" style="border-radius: 12px; padding: 0.8rem; margin-bottom: 2rem;" onclick="addNewProductBySeller()">Publish Live 🔴</button>
+
+            <!-- Seller Orders: Touch to download or mark ready directly -->
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.6rem; border-top:1px solid var(--gray-border); padding-top:1.5rem;">📦 Orders Waiting for Packaging</h3>
+            <p style="font-size:0.8rem; color:#64748b; margin-bottom:1rem;">💡 लेबल डाउनलोड करें या सीधे "Mark Prepared / Packed" दबाकर ऑर्डर को आगे बढ़ाएं।</p>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer Item & Status</th><th>Step 1: Shipping Label</th><th>Step 2: Update Packaging</th></tr></thead>
+                    <tbody id="sellerOrdersTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. ADMIN PANEL -->
+    <div id="tab-admin" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">Admin Dashboard & Manager</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">फ्लो: <strong>Confirm Order</strong> ➔ (सेलर पैक करेगा) ➔ <strong>Out for Delivery (OTP Activated)</strong></p>
+
+        <!-- 🌟 NEW: ADMIN CUSTOMER REGISTRATION OTP GENERATOR TOOL 🌟 -->
+        <div style="background:linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border:2px solid #fdba74; padding:1.5rem; border-radius:18px; margin-bottom:1.5rem; box-shadow:0 6px 15px rgba(249,115,22,0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                <h3 style="font-size:1.15rem; font-weight:800; color:#9a3412;">🔐 Customer Registration OTP Generator Tool</h3>
+                <span class="badge" style="background:#ea580c; color:#fff;">WhatsApp Verification</span>
+            </div>
+            <p style="font-size:0.85rem; color:#7c2d12; margin-bottom:1rem;">
+                जब ग्राहक WhatsApp (`9798377142`) पर अपना मोबाइल नंबर व पासवर्ड भेजेगा, तो उसे यहाँ दर्ज करें। सिस्टम एक यूनिक 4-Digit OTP जनरेट करेगा। वही OTP ग्राहक को प्रदान करें।
+            </p>
+            <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem;">
+                <input type="text" id="admGenUserPhone" placeholder="Customer Phone (e.g. 9876543210)" style="flex:1; min-width:180px; padding:0.6rem; border:1px solid #cbd5e1; border-radius:8px;">
+                <input type="text" id="admGenUserPass" placeholder="Customer Password" style="flex:1; min-width:180px; padding:0.6rem; border:1px solid #cbd5e1; border-radius:8px;">
+                <button class="btn btn-buy" style="width:auto; padding:0.6rem 1.4rem; border-radius:8px;" onclick="adminGenerateCustomerOtp()">Generate OTP 🔑</button>
+            </div>
+            <div id="admGenOtpResultBox" style="display:none; background:#ffffff; padding:0.9rem 1.2rem; border-radius:12px; border:1px dashed #ea580c; font-size:0.95rem;"></div>
+        </div>
+
+        <!-- Dynamic Delivery Partner Management (Add / Remove) -->
+        <div style="background:var(--white); padding:1.5rem; border-radius:16px; border:1px solid var(--gray-border); margin-bottom:1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.5rem;">🛵 Manage Delivery Boys (Add / Remove)</h3>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">यहाँ जोड़े गए डिलीवरी पार्टनर्स डिलीवरी व रिटर्न पिकअप दोनों संभालेंगे।</p>
+            <div style="display:flex; gap:0.8rem; margin-bottom:1rem; flex-wrap:wrap;">
+                <input type="text" id="adminNewPartnerName" placeholder="Delivery Boy Name (e.g. Ramesh Kumar)" style="flex:1; min-width:180px; padding:0.6rem; border:1px solid var(--gray-border); border-radius:6px;">
+                <input type="text" id="adminNewPartnerPhone" placeholder="Mobile Number (e.g. 9876543210)" style="flex:1; min-width:160px; padding:0.6rem; border:1px solid var(--gray-border); border-radius:6px;">
+                <button class="btn btn-buy" style="width:auto; padding:0.6rem 1.2rem; border-radius:8px;" onclick="addDeliveryPartnerByAdmin()">+ Add Delivery Boy</button>
+            </div>
+            <div id="adminPartnerChipList" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>
+        </div>
+
+        <!-- 1. ACTIVE / PENDING ORDERS TABLE -->
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--primary-navy); margin-bottom:0.6rem;">⚡ Active & Pending Orders</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">ऑर्डर्स जो प्रोसेसिंग, पैकेजिंग या डिलीवरी के रास्ते में हैं:</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer & Address</th>
+                        <th>Item & Mode</th>
+                        <th>Current Status</th>
+                        <th>Admin Progress Control</th>
+                        <th>Courier / Delivery Partner</th>
+                    </tr>
+                </thead>
+                <tbody id="adminOrderTable"></tbody>
+            </table>
+        </div>
+
+        <!-- 2. RETURN & REFUND MANAGEMENT TABLE -->
+        <h3 style="font-size:1.15rem; font-weight:800; color:#b45309; margin-top:2rem; margin-bottom:0.6rem;">🔄 Customer Return & Refund Requests</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">कस्टमर द्वारा भेजे गए रिटर्न रिक्वेस्ट्स:</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer & Reason</th>
+                        <th>Return Status</th>
+                        <th>Assign Pickup Partner</th>
+                        <th>Admin Return Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminReturnTable"></tbody>
+            </table>
+        </div>
+
+        <!-- 3. DELIVERED COMPLETED ARCHIVE TABLE -->
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--success); margin-top:2.5rem; margin-bottom:0.6rem;">🏁 Completed Deliveries Archive</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">सफलतापूर्वक डिलीवर व सेटल किए गए ऑर्डर्स:</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer & Phone</th>
+                        <th>Item & Amount</th>
+                        <th>Delivered By</th>
+                        <th>Delivery Mode</th>
+                        <th>Delivered Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="adminDeliveredTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 7. DELIVERY PARTNER PORTAL -->
+    <div id="tab-partner" class="container tab-content">
+        <header class="hero" style="background: linear-gradient(135deg, #0284c7, #0f172a);">
+            <h1>🛵 Delivery Boy Dashboard</h1>
+            <p>ड्रॉपडाउन से अपना नाम चुनें, डिलीवरी पार्सल (OTP/COD) व रिटर्न पिकअप पार्सल संभालें।</p>
+        </header>
+
+        <!-- Partner Selection Dropdown -->
+        <div style="background:var(--white); padding:1.5rem; border-radius:16px; border:1px solid var(--gray-border); max-width:550px; margin:0 auto 1.5rem auto;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Select Your Registered Name</label>
+                <select id="partnerSelectDropdown" onchange="renderPartnerAssignedParcels()" style="font-weight:700; font-size:1rem;">
+                    <option value="">-- Choose Your Name --</option>
+                </select>
+            </div>
+        </div>
+
+        <h3 id="partnerParcelsTitle" style="margin-bottom: 0.8rem; font-weight: 700; font-size: 1.1rem; color:var(--primary-navy);">Assigned Tasks (Deliveries & Returns)</h3>
+        <div id="partnerParcelsList"></div>
+    </div>
+
+    <div class="footer-gumani">
+        <p><strong>MARTZO Local Super App</strong> — Serving <strong>Gumani, Jharkhand (Pincode: 816101)</strong> & Surrounding Areas.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.4rem; color: #64748b;">30-Minute Local Delivery Target | Everything You Need, One App.</p>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. IN-CODE STORAGE ENGINE & CROSS-DEVICE SYNC
+        // ==========================================
+        const SYNC_CHANNEL = new BroadcastChannel('martzo_cloud_sync');
+
+        const INITIAL_IN_CODE_DATA = {
+            products: [
+                { id: 1, name: "Fresh Farm Tomatoes (1kg)", category: "Grocery", desc: "Organic farm-fresh tomatoes.", price: "₹40", deliveryFee: "Free", returnPolicy: "Non-Returnable (Food/Grocery)", reviews: [], image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500" },
+                { id: 2, name: "Cotton Casual T-Shirt", category: "Clothing", desc: "Breathable 100% cotton casual wear.", price: "₹349", deliveryFee: "Free", returnPolicy: "7 Days Returnable", reviews: [{rating: 5, comment: "Superb quality!"}], image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" }
+            ],
+            partners: [
+                { id: 1, name: "Ramesh Kumar", phone: "9876543210" },
+                { id: 2, name: "Suresh Singh", phone: "9123456789" },
+                { id: 3, name: "Amit Das", phone: "9988776655" }
+            ],
+            orders: [
+                { 
+                    id: 'MZ-10001', 
+                    customerId: 'CUST-123456', 
+                    item: 'Cotton Casual T-Shirt', 
+                    price: '₹349', 
+                    deliveryFee: 'Free', 
+                    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500', 
+                    name: 'Rohit Sharma', 
+                    phone: '9876543210', 
+                    address: 'Gumani Main Road', 
+                    pincode: '816101', 
+                    paymentMode: 'Prepaid', 
+                    status: 'DELIVERED', 
+                    partner: 'Ramesh Kumar', 
+                    otp: '4821', 
+                    labelDownloaded: true,
+                    returnPolicy: '7 Days Returnable',
+                    returnStatus: 'NONE',
+                    returnReason: '',
+                    returnPartner: '',
+                    rating: 5,
+                    review: 'Great fitting and fast delivery in Gumani!',
+                    timestamps: { placed: '10/10/2026, 10:00 AM', confirmed: '10/10/2026, 10:05 AM', preparing: '10/10/2026, 10:15 AM', outForDelivery: '10/10/2026, 10:30 AM', delivered: '10/10/2026, 10:50 AM', returnRequested: null, returnPickup: null, refunded: null } 
+                }
+            ],
+            users: {
+                "9876543210": { custId: "CUST-123456", phone: "9876543210", pass: "1234" }
+            },
+            adminGeneratedOtps: {},
+            agents: [{ name: "Rahul Support", phone: "919798377142" }],
+            vendors: { "vendor_gumani_1": "pass123" }
+        };
+
+        function getCloudData(key) {
+            const raw = localStorage.getItem(key);
+            if (!raw) {
+                if (key === 'martzo_products') return INITIAL_IN_CODE_DATA.products;
+                if (key === 'martzo_partners') return INITIAL_IN_CODE_DATA.partners;
+                if (key === 'martzo_orders') return INITIAL_IN_CODE_DATA.orders;
+                if (key === 'martzo_users') return INITIAL_IN_CODE_DATA.users;
+                if (key === 'martzo_adm_otps') return INITIAL_IN_CODE_DATA.adminGeneratedOtps;
+                if (key === 'martzo_agents') return INITIAL_IN_CODE_DATA.agents;
+                if (key === 'martzo_vendors') return INITIAL_IN_CODE_DATA.vendors;
+                if (key === 'martzo_cart') return [];
+                return null;
+            }
+            return JSON.parse(raw);
+        }
+
+        function setCloudData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+            SYNC_CHANNEL.postMessage({ key: key, data: data });
+        }
+
+        SYNC_CHANNEL.onmessage = function(event) {
+            if (event.data.key === 'martzo_orders') { 
+                renderMyOrders(); 
+                renderPartnerAssignedParcels(); 
+                if (activeVendorId) renderSellerOrders(); 
+                loadAdminDashboard(); 
+            }
+            if (event.data.key === 'martzo_products') renderCustomerStore();
+            if (event.data.key === 'martzo_partners') {
+                renderAdminDeliveryPartners();
+                populatePartnerSelectDropdown();
+            }
+        };
+
+        if (!localStorage.getItem('martzo_products')) setCloudData('martzo_products', INITIAL_IN_CODE_DATA.products);
+        if (!localStorage.getItem('martzo_partners')) setCloudData('martzo_partners', INITIAL_IN_CODE_DATA.partners);
+        if (!localStorage.getItem('martzo_orders')) setCloudData('martzo_orders', INITIAL_IN_CODE_DATA.orders);
+        if (!localStorage.getItem('martzo_users')) setCloudData('martzo_users', INITIAL_IN_CODE_DATA.users);
+        if (!localStorage.getItem('martzo_adm_otps')) setCloudData('martzo_adm_otps', INITIAL_IN_CODE_DATA.adminGeneratedOtps);
+        if (!localStorage.getItem('martzo_agents')) setCloudData('martzo_agents', INITIAL_IN_CODE_DATA.agents);
+        if (!localStorage.getItem('martzo_vendors')) setCloudData('martzo_vendors', INITIAL_IN_CODE_DATA.vendors);
+        if (!localStorage.getItem('martzo_cart')) setCloudData('martzo_cart', []);
+
+        let currentActiveCategory = 'All';
+        let selectedProductForDetail = null;
+        let pendingCheckoutItem = null;
+        let viewingOrderId = null;
+        let selectedStarRating = 0;
+        let currentCustomerId = null;
+        let currentCustomerPhone = null;
+        let activeVendorId = null;
+        let activeDownloadingOrderId = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedCustId = localStorage.getItem('martzo_active_cust_id');
+            const savedCustPhone = localStorage.getItem('martzo_active_cust_phone');
+            if (savedCustId) {
+                currentCustomerId = savedCustId;
+                currentCustomerPhone = savedCustPhone || "User";
+                updateNavProfileDisplay(savedCustId);
+            } else {
+                updateNavProfileDisplay(null);
+            }
+            renderCustomerStore();
+            populatePartnerSelectDropdown();
+        });
+
+        function updateNavProfileDisplay(custId) {
+            const btn = document.getElementById('navProfileBtnText');
+            const badge = document.getElementById('customerUserBadge');
+            if (custId) {
+                btn.innerText = `My Profile (${custId})`;
+                badge.innerText = `ID: ${custId}`;
+            } else {
+                btn.innerText = "My Profile (Login)";
+                badge.innerText = "Guest User";
+            }
+        }
+
+        // ==========================================
+        // 🌟 COLORFUL UNIVERSAL POP-UP SYSTEM 🌟
+        // ==========================================
+        function showUniversalPopup(config) {
+            const modal = document.getElementById('universalPopupModal');
+            const card = document.getElementById('universalPopupCard');
+            const iconEl = document.getElementById('universalPopupIcon');
+            const titleEl = document.getElementById('universalPopupTitle');
+            const msgEl = document.getElementById('universalPopupMessage');
+            const customEl = document.getElementById('universalPopupCustomContent');
+            const btnEl = document.getElementById('universalPopupBtn');
+
+            card.className = 'modal-card';
+            card.classList.add('theme-' + (config.theme || 'info'));
+
+            iconEl.innerHTML = config.icon || '✨';
+            titleEl.innerText = config.title || 'Notice';
+            titleEl.style.color = config.theme === 'feedback' ? '#9a3412' : (config.theme === 'success' ? '#065f46' : (config.theme === 'alert' ? '#9f1239' : '#4c1d95'));
+            
+            msgEl.innerHTML = config.message || '';
+            msgEl.style.color = config.theme === 'feedback' ? '#7c2d12' : (config.theme === 'success' ? '#047857' : (config.theme === 'alert' ? '#881337' : '#3730a3'));
+            
+            customEl.innerHTML = config.customContent || '';
+
+            btnEl.innerText = config.buttonText || 'Continue 🚀';
+            btnEl.style.background = config.theme === 'feedback' ? '#ea580c' : (config.theme === 'success' ? '#10b981' : (config.theme === 'alert' ? '#e11d48' : '#7c3aed'));
+            btnEl.style.color = '#ffffff';
+
+            btnEl.onclick = function() {
+                closeUniversalPopup();
+                if (config.onConfirm) config.onConfirm();
+            };
+
+            modal.classList.add('show');
+        }
+
+        function closeUniversalPopup() {
+            document.getElementById('universalPopupModal').classList.remove('show');
+        }
+
+        function showCustomAlert(message) {
+            showUniversalPopup({
+                theme: 'alert',
+                icon: '⚠️',
+                title: 'Notice & Attention',
+                message: message,
+                buttonText: 'Got It, Let\'s Continue ✍️'
+            });
+        }
+
+        // =======================================================
+        // 🌟 NEW: PROFILE AUTH & WHATSAPP OTP SYSTEM 🌟
+        // =======================================================
+        function openProfileAuthModal() {
+            const modal = document.getElementById('profileAuthModal');
+            const loggedInView = document.getElementById('profileLoggedInView');
+            const loggedOutView = document.getElementById('profileLoggedOutView');
+
+            if (currentCustomerId) {
+                loggedInView.style.display = 'block';
+                loggedOutView.style.display = 'none';
+                document.getElementById('profCustIdDisplay').innerText = currentCustomerId;
+                document.getElementById('profCustPhoneDisplay').innerText = currentCustomerPhone || 'Registered';
+            } else {
+                loggedInView.style.display = 'none';
+                loggedOutView.style.display = 'block';
+                resetProfileForm();
+            }
+            modal.classList.add('show');
+        }
+
+        function closeProfileAuthModal() {
+            document.getElementById('profileAuthModal').classList.remove('show');
+        }
+
+        function resetProfileForm() {
+            document.getElementById('regStepOneBox').style.display = 'block';
+            document.getElementById('regStepTwoOtpBox').style.display = 'none';
+            document.getElementById('profEnteredOtp').value = '';
+        }
+
+        function handleDirectLogin() {
+            const phone = document.getElementById('profInputPhone').value.trim();
+            const pass = document.getElementById('profInputPass').value.trim();
+
+            if (!phone || phone.length < 10 || !pass) {
+                showCustomAlert('Please enter your valid 10-digit mobile number and password.');
+                return;
+            }
+
+            const users = getCloudData('martzo_users') || {};
+            const user = users[phone];
+
+            if (user && user.pass === pass) {
+                currentCustomerId = user.custId;
+                currentCustomerPhone = phone;
+                localStorage.setItem('martzo_active_cust_id', user.custId);
+                localStorage.setItem('martzo_active_cust_phone', phone);
+                updateNavProfileDisplay(user.custId);
+                closeProfileAuthModal();
+
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🔓',
+                    title: 'Login Successful!',
+                    message: `Welcome back! Logged in with Customer ID <strong>${user.custId}</strong>.`,
+                    buttonText: 'Start Shopping 🛒'
+                });
+            } else {
+                showCustomAlert('❌ Account not found or wrong password! If you are a new user, please click "Get WhatsApp OTP" to register.');
+            }
+        }
+
+        function requestWhatsAppRegistrationOtp() {
+            const phone = document.getElementById('profInputPhone').value.trim();
+            const pass = document.getElementById('profInputPass').value.trim();
+
+            if (!phone || phone.length < 10) return showCustomAlert('Please enter a valid 10-digit mobile number.');
+            if (!pass) return showCustomAlert('Please create a password for your account.');
+
+            // Switch UI to OTP step
+            document.getElementById('regStepOneBox').style.display = 'none';
+            document.getElementById('regStepTwoOtpBox').style.display = 'block';
+
+            // Redirect to Admin WhatsApp with prefilled message
+            const adminPhone = "919798377142";
+            const textMsg = `Hello MARTZO Admin!\nI want to create my MARTZO ID.\n📱 My Mobile Number: ${phone}\n🔑 My Password: ${pass}\n\nPlease generate and provide me my 4-Digit Registration OTP.`;
+            const waUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(textMsg)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function verifyCustomerOtpAndRegister() {
+            const phone = document.getElementById('profInputPhone').value.trim();
+            const pass = document.getElementById('profInputPass').value.trim();
+            const enteredOtp = document.getElementById('profEnteredOtp').value.trim();
+
+            if (!enteredOtp || enteredOtp.length !== 4) {
+                showCustomAlert('Please enter the 4-digit OTP provided by the Admin on WhatsApp.');
+                return;
+            }
+
+            const key = `${phone}_${pass}`;
+            const admOtps = getCloudData('martzo_adm_otps') || {};
+            const systemGeneratedOtp = admOtps[key];
+
+            if (systemGeneratedOtp && systemGeneratedOtp.toString() === enteredOtp) {
+                const newCustId = 'CUST-' + Math.floor(100000 + Math.random() * 900000);
+                const users = getCloudData('martzo_users') || {};
+                users[phone] = { custId: newCustId, phone, pass };
+                setCloudData('martzo_users', users);
+
+                // Set as active session
+                currentCustomerId = newCustId;
+                currentCustomerPhone = phone;
+                localStorage.setItem('martzo_active_cust_id', newCustId);
+                localStorage.setItem('martzo_active_cust_phone', phone);
+                updateNavProfileDisplay(newCustId);
+
+                closeProfileAuthModal();
+                confetti({ particleCount: 160, spread: 90, origin: { y: 0.55 } });
+
+                // 🌟 GORGEOUS SUCCESS POP-UP AS REQUESTED 🌟
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🎉',
+                    title: 'Your ID Has Been Created Successfully!',
+                    message: `Welcome to MARTZO! Your verified account has been generated with ID <strong>${newCustId}</strong>.<br><br><strong>Please place your first order now!</strong> Fast 30-min delivery is waiting for you in Gumani.`,
+                    buttonText: 'Order Your First Item 🛍️',
+                    onConfirm: () => switchTab('customer')
+                });
+            } else {
+                showCustomAlert('❌ Invalid OTP! This OTP does not match the registered Number and Password. Please contact Admin.');
+            }
+        }
+
+        function logoutCustomerProfile() {
+            currentCustomerId = null;
+            currentCustomerPhone = null;
+            localStorage.removeItem('martzo_active_cust_id');
+            localStorage.removeItem('martzo_active_cust_phone');
+            updateNavProfileDisplay(null);
+            closeProfileAuthModal();
+
+            showUniversalPopup({
+                theme: 'info',
+                icon: '🚪',
+                title: 'Logged Out',
+                message: 'You have been successfully logged out of your MARTZO profile.',
+                buttonText: 'Continue as Guest'
+            });
+        }
+
+        // =======================================================
+        // 🌟 ADMIN TOOL: GENERATE CUSTOMER REGISTRATION OTP 🌟
+        // =======================================================
+        function adminGenerateCustomerOtp() {
+            const phone = document.getElementById('admGenUserPhone').value.trim();
+            const pass = document.getElementById('admGenUserPass').value.trim();
+
+            if (!phone || phone.length < 10 || !pass) {
+                showCustomAlert('Enter customer mobile number and password received on WhatsApp.');
+                return;
+            }
+
+            // Generate deterministic or random 4 digit code mapped to phone + pass
+            const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            const key = `${phone}_${pass}`;
+
+            const admOtps = getCloudData('martzo_adm_otps') || {};
+            admOtps[key] = generatedOtp;
+            setCloudData('martzo_adm_otps', admOtps);
+
+            const resultBox = document.getElementById('admGenOtpResultBox');
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `
+                <p style="color:#065f46; font-weight:bold; margin-bottom:0.3rem;">✅ OTP Generated Successfully!</p>
+                <p>Phone: <strong>${phone}</strong> | Password: <strong>${pass}</strong></p>
+                <p style="font-size:1.4rem; color:#ea580c; font-weight:900; letter-spacing:4px; margin-top:0.4rem;">
+                    OTP: <span style="background:#fef3c7; padding:0.2rem 0.6rem; border-radius:6px; border:1px solid #f59e0b;">${generatedOtp}</span>
+                </p>
+                <small style="color:#64748b;">(Send this 4-digit code back to customer on WhatsApp to complete their registration)</small>
+            `;
+        }
+
+        // ==========================================
+        // 2. REGISTRATION & TABS
+        // ==========================================
+        function switchTab(tabId) {
+            if (tabId === 'admin') {
+                document.getElementById('adminLoginModal').classList.add('show');
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.navbar button').forEach(el => el.classList.remove('active'));
+
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) targetTab.classList.add('active');
+
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (targetBtn) targetBtn.classList.add('active');
+
+            if (tabId === 'customer') renderCustomerStore();
+            if (tabId === 'cart') renderCartPage();
+            if (tabId === 'myorders') renderMyOrders();
+            if (tabId === 'seller' && activeVendorId) renderSellerOrders();
+            if (tabId === 'partner') renderPartnerAssignedParcels();
+            if (tabId === 'admin') loadAdminDashboard();
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPasswordInput').value.trim();
+            if (pass === 'admin123') {
+                document.getElementById('adminLoginModal').classList.remove('show');
+                document.getElementById('adminPasswordInput').value = '';
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.navbar button').forEach(el => el.classList.remove('active'));
+                document.getElementById('tab-admin').classList.add('active');
+                document.getElementById('btn-admin').classList.add('active');
+                loadAdminDashboard();
+            } else {
+                showCustomAlert('❌ Incorrect Admin Password! Access Denied.');
+            }
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.remove('show');
+            switchTab('customer');
+        }
+
+        // ==========================================
+        // 3. STOREFRONT & CART
+        // ==========================================
+        function filterStoreCategory(cat, btnElement) {
+            currentActiveCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btnElement.classList.add('active-cat');
+            document.getElementById('currentCategoryTitle').innerText = cat === 'All' ? 'All Products' : btnElement.innerText;
+            renderCustomerStore();
+        }
+
+        function renderCustomerStore() {
+            const products = getCloudData('martzo_products');
+            const grid = document.getElementById('customerProductGrid');
+            const filtered = currentActiveCategory === 'All' ? products : products.filter(p => p.category === currentActiveCategory);
+
+            if (!filtered || filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:#64748b; background:#fff; border-radius:10px;">No products in this category.</div>`;
+                updateCartUI();
+                return;
+            }
+
+            grid.innerHTML = filtered.map((p) => {
+                const avgRating = p.reviews && p.reviews.length > 0 ? (p.reviews.reduce((s, r) => s + r.rating, 0) / p.reviews.length).toFixed(1) : 'No ratings';
+                return `
+                    <div class="card" onclick="openProductDetail(${p.id})">
+                        <div class="card-img"><img src="${p.image}" alt="${p.name}"></div>
+                        <div class="card-body">
+                            <div style="font-size:0.65rem; font-weight:700; color:var(--accent-purple); text-transform:uppercase; margin-bottom:0.1rem;">${p.category}</div>
+                            <div class="card-title">${p.name}</div>
+                            <div class="card-desc">${p.desc || 'Quality item'}</div>
+                            <div style="font-size:0.75rem; color:#f59e0b; font-weight:700; margin-bottom:0.4rem;">⭐ ${avgRating} ${p.reviews ? `(${p.reviews.length})` : ''}</div>
+                            <div class="price">${p.price}</div>
+                            <div class="button-group" onclick="event.stopPropagation()">
+                                <button class="btn btn-cart" onclick="addToCart('${p.name}', '${p.price}', '${p.deliveryFee}', '${p.image}')">Cart</button>
+                                <button class="btn btn-buy" onclick="openBuyNowModal('${p.name}', '${p.price}', '${p.deliveryFee}', '${p.image}')">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            updateCartUI();
+        }
+
+        function openProductDetail(productId) {
+            const products = getCloudData('martzo_products');
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            selectedProductForDetail = product;
+            document.getElementById('detailImg').src = product.image;
+            document.getElementById('modalProductCat').innerText = product.category;
+            document.getElementById('modalReturnBadge').innerText = product.returnPolicy || 'Non-Returnable';
+            document.getElementById('detailTitle').innerText = product.name;
+            document.getElementById('detailPrice').innerText = product.price;
+            document.getElementById('detailDeliveryFee').innerText = product.deliveryFee === 'Free' ? '✨ Free Delivery in Gumani' : `📦 Delivery Fee: ${product.deliveryFee}`;
+            document.getElementById('detailDesc').innerText = product.desc || 'No detailed description provided by seller.';
+            
+            const revList = document.getElementById('productReviewsList');
+            if (!product.reviews || product.reviews.length === 0) {
+                revList.innerHTML = "No customer ratings yet.";
+            } else {
+                revList.innerHTML = product.reviews.map(r => `
+                    <div style="border-bottom:1px solid var(--gray-border); padding:0.3rem 0; font-size:0.8rem;">
+                        <span>⭐ ${r.rating}/5</span> — <span style="color:#334155;">${r.comment || 'Good product'}</span>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('productDetailModal').classList.add('show');
+        }
+
+        function closeProductDetailModal() {
+            document.getElementById('productDetailModal').classList.remove('show');
+        }
+
+        function addToCart(name, price, deliveryFee, image) {
+            const cart = getCloudData('martzo_cart') || [];
+            cart.push({ name, price, deliveryFee: deliveryFee || 'Free', image: image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500' });
+            setCloudData('martzo_cart', cart);
+            updateCartUI();
+            
+            showUniversalPopup({
+                theme: 'info',
+                icon: '🛒',
+                title: 'Added to Cart!',
+                message: `<strong>"${name}"</strong> has been added to your shopping cart. You can continue shopping or checkout anytime.`,
+                buttonText: 'Awesome!'
+            });
+        }
+
+        function updateCartUI() {
+            const cart = getCloudData('martzo_cart') || [];
+            document.getElementById('cartBadgeCount').innerText = cart.length;
+        }
+
+        function renderCartPage() {
+            const cart = getCloudData('martzo_cart') || [];
+            const container = document.getElementById('cartItemsContainer');
+            const checkoutSec = document.getElementById('cartCheckoutSec');
+
+            if (cart.length === 0) {
+                container.innerHTML = "Your cart is empty. Shop now from storefront!";
+                checkoutSec.style.display = 'none';
+            } else {
+                container.innerHTML = cart.map((item, idx) => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem 0; border-bottom:1px solid var(--gray-border);">
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <img src="${item.image}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                            <div>
+                                <h4 style="font-size:0.95rem; color:var(--primary-navy);">${item.name}</h4>
+                                <p style="font-size:0.8rem; color:#64748b;">Delivery: ${item.deliveryFee}</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <strong>${item.price}</strong>
+                            <button class="btn" style="background:var(--danger); width:auto; padding:0.3rem 0.6rem; font-size:0.75rem; border-radius:6px;" onclick="removeFromCart(${idx})">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                const itemTotal = cart.reduce((sum, item) => sum + parseInt(item.price.replace('₹','').replace(/[^0-9]/g, '') || 0), 0);
+                document.getElementById('fullCartTotal').innerText = '₹' + itemTotal;
+                checkoutSec.style.display = 'block';
+            }
+        }
+
+        function removeFromCart(index) {
+            const cart = getCloudData('martzo_cart') || [];
+            cart.splice(index, 1);
+            setCloudData('martzo_cart', cart);
+            renderCartPage();
+            updateCartUI();
+        }
+
+        function openBuyNowModal(name, price, deliveryFee, image) {
+            const products = getCloudData('martzo_products') || [];
+            const pObj = products.find(p => p.name === name);
+            const returnPol = pObj ? pObj.returnPolicy : '7 Days Returnable';
+
+            pendingCheckoutItem = { type: 'single', items: [{ name, price, deliveryFee: deliveryFee || 'Free', image: image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500', returnPolicy: returnPol }], total: price, deliveryFee: deliveryFee || 'Free' };
+            document.getElementById('checkoutItemName').innerText = name;
+            document.getElementById('checkoutItemPrice').innerText = price;
+            document.getElementById('checkoutDeliveryFeeText').innerText = deliveryFee === 'Free' ? 'Free' : deliveryFee;
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        function openCartCheckoutModal() {
+            const cart = getCloudData('martzo_cart') || [];
+            if (cart.length === 0) return;
+            const itemTotal = cart.reduce((sum, item) => sum + parseInt(item.price.replace('₹','').replace(/[^0-9]/g, '') || 0), 0);
+            
+            let maxDelivery = 'Free';
+            cart.forEach(c => { if(c.deliveryFee !== 'Free') maxDelivery = c.deliveryFee; });
+
+            pendingCheckoutItem = { type: 'cart', items: cart, total: '₹' + itemTotal, deliveryFee: maxDelivery };
+            document.getElementById('checkoutItemName').innerText = `${cart.length} Item(s) in Cart`;
+            document.getElementById('checkoutItemPrice').innerText = '₹' + itemTotal;
+            document.getElementById('checkoutDeliveryFeeText').innerText = maxDelivery === 'Free' ? 'Free' : maxDelivery;
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('show');
+        }
+
+        function confirmAndSendWhatsApp() {
+            const name = document.getElementById('checkoutName').value.trim();
+            const phone = document.getElementById('checkoutPhone').value.trim();
+            const address = document.getElementById('checkoutAddress').value.trim();
+            const pincode = '816101';
+            const paymentMode = document.getElementById('checkoutPaymentMode').value;
+
+            if (!name) { showCustomAlert('⚠️ Please enter your Full Name.'); return; }
+            if (!phone || phone.length < 10) { showCustomAlert('📱 Please enter a valid WhatsApp Mobile Number.'); return; }
+            if (!address) { showCustomAlert('📍 Delivery Address is missing!'); return; }
+
+            const orders = getCloudData('martzo_orders') || [];
+            const newId = 'MZ-' + (10000 + orders.length + 1);
+            const randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            const currentTime = new Date().toLocaleString();
+
+            const finalCustId = currentCustomerId || ('CUST-' + Math.floor(100000 + Math.random() * 900000));
+
+            pendingCheckoutItem.items.forEach(item => {
+                orders.push({
+                    id: newId,
+                    customerId: finalCustId,
+                    item: item.name,
+                    price: item.price,
+                    deliveryFee: pendingCheckoutItem.deliveryFee,
+                    image: item.image,
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    pincode: pincode,
+                    paymentMode: paymentMode,
+                    status: 'NEW', 
+                    partner: 'Unassigned',
+                    labelDownloaded: false, 
+                    returnPolicy: item.returnPolicy || '7 Days Returnable',
+                    returnStatus: 'NONE',
+                    returnReason: '',
+                    returnPartner: '',
+                    rating: 0,
+                    review: '',
+                    otp: randomOtp,
+                    timestamps: { placed: currentTime, confirmed: null, preparing: null, outForDelivery: null, delivered: null, returnRequested: null, returnPickup: null, refunded: null }
+                });
+            });
+
+            setCloudData('martzo_orders', orders);
+            if (pendingCheckoutItem.type === 'cart') {
+                setCloudData('martzo_cart', []);
+                updateCartUI();
+            }
+            closeCheckoutModal();
+
+            const agents = getCloudData('martzo_agents') || [{ name: "Support", phone: "919798377142" }];
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+            confetti({ particleCount: 140, spread: 85, origin: { y: 0.6 } });
+
+            let btnAction = () => { switchTab('myorders'); };
+
+            if (paymentMode === 'Prepaid') {
+                const whatsappMsg = `Hello MARTZO! Order ID *${newId}* (Prepaid).\nName: ${name}\nAddress: ${address} - ${pincode}\nPlease share payment QR.`;
+                const whatsappUrl = `https://wa.me/${randomAgent.phone}?text=${encodeURIComponent(whatsappMsg)}`;
+                
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🎉',
+                    title: 'Order Registered Successfully!',
+                    message: `Order <strong>${newId}</strong> placed successfully!<br><br>Since it's a <strong>Prepaid Order</strong>, please click below to send payment screenshot to WhatsApp Agent <strong>${randomAgent.name}</strong>.`,
+                    customContent: `
+                        <a href="${whatsappUrl}" target="_blank" class="btn btn-whatsapp" style="border-radius:12px; padding:0.8rem; text-decoration:none;">
+                            💬 Open WhatsApp & Pay Now
+                        </a>
+                    `,
+                    buttonText: 'View My Orders Tracker 📦',
+                    onConfirm: btnAction
+                });
+            } else {
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🎉',
+                    title: 'Order Placed Successfully!',
+                    message: `Order <strong>${newId}</strong> placed successfully with <strong>Cash on Delivery (COD)</strong>!<br>It has been sent to Admin for Confirmation.`,
+                    buttonText: 'View My Orders Tracker 📦',
+                    onConfirm: btnAction
+                });
+            }
+        }
+
+        function addCurrentProductToCartFromModal() {
+            if (selectedProductForDetail) {
+                addToCart(selectedProductForDetail.name, selectedProductForDetail.price, selectedProductForDetail.deliveryFee, selectedProductForDetail.image);
+                closeProductDetailModal();
+            }
+        }
+
+        function buyCurrentProductFromModal() {
+            if (selectedProductForDetail) {
+                closeProductDetailModal();
+                openBuyNowModal(selectedProductForDetail.name, selectedProductForDetail.price, selectedProductForDetail.deliveryFee, selectedProductForDetail.image);
+            }
+        }
+
+        // ==========================================
+        // 4. SELLER PORTAL (TOUCH & READY TO PACK)
+        // ==========================================
+        function handleSellerLoginOrRegister() {
+            const vid = document.getElementById('sellerLoginId').value.trim();
+            const vpass = document.getElementById('sellerLoginPass').value.trim();
+            if (!vid || !vpass) return showCustomAlert('Please enter Vendor ID and Password.');
+
+            let vendors = getCloudData('martzo_vendors') || {};
+            if (vendors[vid]) {
+                if (vendors[vid] === vpass) {
+                    startSellerSession(vid);
+                } else {
+                    showCustomAlert('❌ Incorrect password for this Vendor ID.');
+                }
+            } else {
+                vendors[vid] = vpass;
+                setCloudData('martzo_vendors', vendors);
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🏬',
+                    title: 'Vendor Registered!',
+                    message: `Congratulations! New Vendor ID <strong>"${vid}"</strong> has been registered.`,
+                    buttonText: 'Open Dashboard',
+                    onConfirm: () => startSellerSession(vid)
+                });
+            }
+        }
+
+        function startSellerSession(vid) {
+            activeVendorId = vid;
+            document.getElementById('sellerAuthBox').style.display = 'none';
+            document.getElementById('sellerDashboardBox').style.display = 'block';
+            document.getElementById('activeVendorDisplay').innerText = vid;
+            renderSellerOrders();
+        }
+
+        function logoutSeller() {
+            activeVendorId = null;
+            document.getElementById('sellerDashboardBox').style.display = 'none';
+            document.getElementById('sellerAuthBox').style.display = 'block';
+        }
+
+        function autoDetectReturnPolicy(cat) {
+            const polInput = document.getElementById('sellerReturnPolicy');
+            if (cat === 'Grocery' || cat === 'Food' || cat === 'Services') {
+                polInput.value = 'Non-Returnable (Food/Grocery)';
+            } else {
+                polInput.value = '7 Days Returnable';
+            }
+        }
+
+        function toggleDeliveryFeeInput(val) {
+            document.getElementById('customFeeGroup').style.display = val === 'Custom' ? 'block' : 'none';
+        }
+
+        function addNewProductBySeller() {
+            if (!activeVendorId) return showCustomAlert('Please login with your Vendor ID first.');
+            const name = document.getElementById('sellerProductName').value.trim();
+            const category = document.getElementById('sellerCategory').value;
+            const returnPolicy = document.getElementById('sellerReturnPolicy').value;
+            const desc = document.getElementById('sellerProductDesc').value.trim();
+            const price = document.getElementById('sellerPrice').value.trim();
+            const deliveryType = document.getElementById('sellerDeliveryType').value;
+            const customFee = document.getElementById('sellerCustomFee').value.trim();
+            const fileInput = document.getElementById('sellerImageFile');
+
+            if (!name || !price) return showCustomAlert('Enter product name and price.');
+            const finalDeliveryFee = deliveryType === 'Free' ? 'Free' : (customFee || '₹20');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { saveProduct(name, category, returnPolicy, desc, price, finalDeliveryFee, e.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveProduct(name, category, returnPolicy, desc, price, finalDeliveryFee, "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500");
+            }
+        }
+
+        function saveProduct(name, category, returnPolicy, desc, price, deliveryFee, image) {
+            const products = getCloudData('martzo_products');
+            products.push({ id: products.length + 1, vendorId: activeVendorId, name, category, returnPolicy, desc, price: price.includes('₹') ? price : '₹' + price, deliveryFee, reviews: [], image });
+            setCloudData('martzo_products', products);
+            
+            showUniversalPopup({
+                theme: 'success',
+                icon: '🔴',
+                title: 'Product Published Live!',
+                message: `<strong>"${name}"</strong> (${price}) is now live on the MARTZO Storefront.`,
+                buttonText: 'View Store',
+                onConfirm: () => switchTab('customer')
+            });
+        }
+
+        // SELLER ORDERS: TOUCH LABEL BUTTON MARKS IT DOWNLOADED SO PACKAGING IS NEVER BLOCKED
+        function renderSellerOrders() {
+            const orders = getCloudData('martzo_orders') || [];
+            const tbody = document.getElementById('sellerOrdersTable');
+            const pendingPackagingOrders = orders.filter(o => o.status === 'CONFIRMED');
+
+            if (pendingPackagingOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:1.5rem;">🎉 कोई पेंडिंग ऑर्डर नहीं है! तैयार किए गए सभी ऑर्डर्स Admin Panel में भेज दिए गए हैं।</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pendingPackagingOrders.map((o) => {
+                return `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${o.item} (${o.price})<br><small>${o.name}</small><br><span class="badge">${o.status}</span></td>
+                        <td>
+                            <button class="btn" style="background:var(--primary-navy); padding:0.4rem 0.7rem; font-size:0.75rem;" onclick="touchLabelAndOpenModal('${o.id}')">
+                                🏷️ Label PDF / Touch
+                            </button>
+                            <small style="color:green; display:block; margin-top:2px; font-weight:600;">${o.labelDownloaded ? '✔ Label Ready' : 'Tap to ready'}</small>
+                        </td>
+                        <td>
+                            <button class="btn btn-buy" style="padding:0.4rem 0.7rem; font-size:0.75rem;" onclick="sellerMarkPacked('${o.id}')">
+                                📦 Mark Prepared / Packed
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // TOUCHING LABEL MARKS IT AS DOWNLOADED IMMEDIATELY AS REQUESTED
+        function touchLabelAndOpenModal(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (o) {
+                o.labelDownloaded = true; // Auto-mark ready on touch
+                setCloudData('martzo_orders', orders);
+                renderSellerOrders();
+            }
+            openShippingLabelModal(orderId);
+        }
+
+        function openShippingLabelModal(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (!o) return;
+
+            activeDownloadingOrderId = orderId;
+            document.getElementById('lblOrderId').innerText = o.id;
+            document.getElementById('lblCustName').innerText = o.name;
+            document.getElementById('lblCustAddress').innerText = o.address + ' - 816101';
+            document.getElementById('lblItemName').innerText = o.item;
+            document.getElementById('lblPrice').innerText = o.price;
+            document.getElementById('lblPayMode').innerText = o.paymentMode;
+            document.getElementById('lblFee').innerText = o.deliveryFee;
+            document.getElementById('lblBarcodeDisplay').innerText = o.id;
+            document.getElementById('lblQrCodeText').innerText = o.id + '-GUMANI-816101';
+
+            document.getElementById('shippingLabelModal').classList.add('show');
+        }
+
+        function closeShippingLabelModal() {
+            document.getElementById('shippingLabelModal').classList.remove('show');
+        }
+
+        function executeRealPdfDownload() {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === activeDownloadingOrderId);
+            if (!o) return;
+
+            document.getElementById('pdfPayBadge').innerText = o.paymentMode.toUpperCase();
+            document.getElementById('pdfBarcode').innerText = o.id;
+            document.getElementById('pdfTrackingText').innerText = `TRACKING NO: ${o.id}-GUMANI-816101`;
+            document.getElementById('pdfCustName').innerText = o.name;
+            document.getElementById('pdfCustAddress').innerText = `${o.address}, Gumani, Jharkhand`;
+            document.getElementById('pdfCustPhone').innerText = o.phone;
+            document.getElementById('pdfItemTitle').innerText = o.item;
+            document.getElementById('pdfAmount').innerText = o.price;
+
+            const element = document.getElementById('printableLabelArea');
+            const opt = {
+                margin: [4, 4, 4, 4],
+                filename: `MARTZO_Label_${o.id}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: [105, 148], orientation: 'portrait' } 
+            };
+
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    o.labelDownloaded = true;
+                    setCloudData('martzo_orders', orders);
+                    closeShippingLabelModal();
+                    renderSellerOrders();
+                    
+                    showUniversalPopup({
+                        theme: 'success',
+                        icon: '🏷️',
+                        title: 'PDF Shipping Label Ready!',
+                        message: `Official Shipping Label PDF for Order <strong>${o.id}</strong> has been downloaded. You can now mark the parcel as <strong>Prepared / Packed</strong>.`,
+                        buttonText: 'Ready to Pack 📦'
+                    });
+                });
+            }, 300);
+        }
+
+        function sellerMarkPacked(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (!o) return;
+
+            // Mark ready and advance status directly
+            o.labelDownloaded = true;
+            o.status = 'PREPARING';
+            if (!o.timestamps) o.timestamps = {};
+            o.timestamps.preparing = new Date().toLocaleString();
+            setCloudData('martzo_orders', orders);
+
+            renderSellerOrders();
+            renderMyOrders();
+            loadAdminDashboard();
+            
+            showUniversalPopup({
+                theme: 'info',
+                icon: '📦',
+                title: 'Parcel Prepared & Packed!',
+                message: `Order <strong>${orderId}</strong> is now securely packaged! It has been moved to the Admin Panel for courier dispatch.`,
+                buttonText: 'Great!'
+            });
+        }
+
+        // =======================================================
+        // 5. ADMIN CONTROL PANEL & RETURN MANAGEMENT
+        // =======================================================
+        function addDeliveryPartnerByAdmin() {
+            const name = document.getElementById('adminNewPartnerName').value.trim();
+            const phone = document.getElementById('adminNewPartnerPhone').value.trim();
+            if (!name || !phone) return showCustomAlert('Please enter Delivery Partner Name and Phone.');
+
+            let partners = getCloudData('martzo_partners') || [];
+            partners.push({ id: Date.now(), name, phone });
+            setCloudData('martzo_partners', partners);
+
+            document.getElementById('adminNewPartnerName').value = '';
+            document.getElementById('adminNewPartnerPhone').value = '';
+            renderAdminDeliveryPartners();
+            populatePartnerSelectDropdown();
+            loadAdminDashboard();
+            
+            showUniversalPopup({
+                theme: 'success',
+                icon: '🛵',
+                title: 'Delivery Partner Added!',
+                message: `Delivery Executive <strong>"${name}"</strong> (${phone}) has been registered.`,
+                buttonText: 'Done'
+            });
+        }
+
+        function removeDeliveryPartnerByAdmin(id) {
+            let partners = getCloudData('martzo_partners') || [];
+            partners = partners.filter(p => p.id !== id);
+            setCloudData('martzo_partners', partners);
+            renderAdminDeliveryPartners();
+            populatePartnerSelectDropdown();
+            loadAdminDashboard();
+        }
+
+        function renderAdminDeliveryPartners() {
+            const partners = getCloudData('martzo_partners') || [];
+            const container = document.getElementById('adminPartnerChipList');
+            if (partners.length === 0) {
+                container.innerHTML = `<span style="color:#64748b; font-size:0.85rem;">No delivery partners added. Add above.</span>`;
+                return;
+            }
+            container.innerHTML = partners.map(p => `
+                <div class="partner-chip">
+                    <span>🛵 <strong>${p.name}</strong> (${p.phone})</span>
+                    <button onclick="removeDeliveryPartnerByAdmin(${p.id})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function populatePartnerSelectDropdown() {
+            const partners = getCloudData('martzo_partners') || [];
+            const selectEl = document.getElementById('partnerSelectDropdown');
+            const current = selectEl.value;
+            selectEl.innerHTML = `<option value="">-- Choose Your Name --</option>` + partners.map(p => `<option value="${p.name}">${p.name} (${p.phone})</option>`).join('');
+            if (current) selectEl.value = current;
+        }
+
+        function loadAdminDashboard() {
+            renderAdminDeliveryPartners();
+            const orders = getCloudData('martzo_orders') || [];
+            const partners = getCloudData('martzo_partners') || [];
+            const pendingTbody = document.getElementById('adminOrderTable');
+            const returnTbody = document.getElementById('adminReturnTable');
+            const deliveredTbody = document.getElementById('adminDeliveredTable');
+
+            const pendingOrders = orders.filter(o => o.status !== 'DELIVERED' && o.status !== 'CANCELLED');
+            const returnOrders = orders.filter(o => o.returnStatus && o.returnStatus !== 'NONE');
+            const deliveredOrders = orders.filter(o => o.status === 'DELIVERED');
+
+            // 1. Pending Table
+            if (pendingOrders.length === 0) {
+                pendingTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:1.2rem;">✨ कोई भी पेंडिंग ऑर्डर नहीं है।</td></tr>`;
+            } else {
+                pendingTbody.innerHTML = pendingOrders.map((o) => {
+                    const partnerOptions = partners.map(p => `<option value="${p.name}" ${o.partner === p.name ? 'selected' : ''}>${p.name}</option>`).join('');
+
+                    let adminActionHtml = '';
+                    if (o.status === 'NEW') {
+                        adminActionHtml = `<button class="btn" style="background:var(--success); padding:0.4rem;" onclick="adminConfirmOrderMaster('${o.id}')">✅ 1. Confirm Order</button>`;
+                    } else if (o.status === 'CONFIRMED') {
+                        adminActionHtml = `<span style="color:#d97706; font-weight:bold; font-size:0.8rem;">Waiting for Seller to Pack ⏳</span>`;
+                    } else if (o.status === 'PREPARING') {
+                        adminActionHtml = `<button class="btn btn-buy" style="padding:0.4rem;" onclick="adminDispatchOrderMaster('${o.id}')">🛵 2. Out For Delivery (OTP Ready)</button>`;
+                    } else if (o.status === 'OUT_FOR_DELIVERY') {
+                        adminActionHtml = `<span class="badge" style="background:#ede9fe; color:#6b21a8;">Dispatched to ${o.partner} (OTP: ${o.otp})</span>`;
+                    }
+
+                    return `
+                        <tr>
+                            <td><strong>${o.id}</strong></td>
+                            <td>${o.name} (${o.phone})<br><small>${o.address}</small></td>
+                            <td>${o.item} (${o.price})<br><span class="badge" style="background:#e0e7ff; color:#3730a3;">${o.paymentMode}</span></td>
+                            <td><span class="badge">${o.status}</span></td>
+                            <td>${adminActionHtml}</td>
+                            <td>
+                                <select onchange="adminAssignPartnerSelect('${o.id}', this.value)" style="padding:0.3rem; border-radius:4px; font-size:0.85rem;">
+                                    <option value="Unassigned">-- Assign Partner --</option>
+                                    ${partnerOptions}
+                                </select>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // 2. Returns Table
+            if (returnOrders.length === 0) {
+                returnTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:1.2rem;">कोई रिटर्न रिक्वेस्ट पेंडिंग नहीं है।</td></tr>`;
+            } else {
+                returnTbody.innerHTML = returnOrders.map((o) => {
+                    const partnerOptions = partners.map(p => `<option value="${p.name}" ${o.returnPartner === p.name ? 'selected' : ''}>${p.name}</option>`).join('');
+
+                    let actionBtn = '';
+                    if (o.returnStatus === 'REQUESTED') {
+                        actionBtn = `<button class="btn" style="background:#b45309; padding:0.4rem;" onclick="adminApproveReturn('${o.id}')">Approve & Dispatch Pickup 🛵</button>`;
+                    } else if (o.returnStatus === 'APPROVED') {
+                        actionBtn = `<span style="color:#b45309; font-weight:700; font-size:0.8rem;">Pickup Boy Enroute (${o.returnPartner}) ⏳</span>`;
+                    } else if (o.returnStatus === 'PICKUP_DONE') {
+                        actionBtn = `<button class="btn" style="background:var(--success); padding:0.4rem;" onclick="adminCompleteRefund('${o.id}')">Complete Refund & Close 💰</button>`;
+                    } else if (o.returnStatus === 'REFUNDED') {
+                        actionBtn = `<span class="badge" style="background:#d1fae5; color:#065f46;">Refund Completed ✅</span>`;
+                    }
+
+                    return `
+                        <tr>
+                            <td><strong>${o.id}</strong></td>
+                            <td>${o.name} (${o.phone})<br><small style="color:#b45309;"><strong>Reason:</strong> ${o.returnReason || 'N/A'}</small></td>
+                            <td><span class="badge badge-return">${o.returnStatus}</span></td>
+                            <td>
+                                <select id="retPartnerSelect_${o.id}" style="padding:0.3rem; border-radius:4px; font-size:0.85rem;">
+                                    <option value="Unassigned">-- Choose Pickup Boy --</option>
+                                    ${partnerOptions}
+                                </select>
+                            </td>
+                            <td>${actionBtn}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // 3. Delivered Table
+            if (deliveredOrders.length === 0) {
+                deliveredTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:1.2rem;">कोई डिलीवर किया हुआ ऑर्डर रिकॉर्ड नहीं है।</td></tr>`;
+            } else {
+                deliveredTbody.innerHTML = deliveredOrders.map((o) => `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${o.name}<br><small>${o.phone}</small></td>
+                        <td>${o.item}<br><strong style="color:var(--accent-orange);">${o.price}</strong></td>
+                        <td>🛵 <strong>${o.partner || 'Direct'}</strong></td>
+                        <td><span class="badge" style="background:#d1fae5; color:#065f46;">${o.paymentMode}</span></td>
+                        <td><small>${o.timestamps?.delivered || 'Completed'}</small></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function adminConfirmOrderMaster(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (o) {
+                o.status = 'CONFIRMED';
+                if (!o.timestamps) o.timestamps = {};
+                o.timestamps.confirmed = new Date().toLocaleString();
+                setCloudData('martzo_orders', orders);
+                loadAdminDashboard();
+                renderMyOrders();
+                
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '✅',
+                    title: 'Order Confirmed by Admin!',
+                    message: `Order <strong>${orderId}</strong> has been confirmed and forwarded to the Seller for packaging.`,
+                    buttonText: 'Understood'
+                });
+            }
+        }
+
+        function adminDispatchOrderMaster(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const partners = getCloudData('martzo_partners') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (!o) return;
+
+            if (o.partner === 'Unassigned' || !o.partner) {
+                if (partners.length > 0) {
+                    o.partner = partners[0].name; 
+                } else {
+                    showCustomAlert('Please add at least one Delivery Partner above before dispatching.');
+                    return;
+                }
+            }
+
+            o.status = 'OUT_FOR_DELIVERY';
+            if (!o.timestamps) o.timestamps = {};
+            o.timestamps.outForDelivery = new Date().toLocaleString();
+            setCloudData('martzo_orders', orders);
+            loadAdminDashboard();
+            renderMyOrders();
+            renderPartnerAssignedParcels();
+            
+            showUniversalPopup({
+                theme: 'info',
+                icon: '🛵',
+                title: 'Out for Delivery Activated!',
+                message: `Order <strong>${orderId}</strong> is now OUT FOR DELIVERY with partner <strong>"${o.partner}"</strong>. Customer can now view their secure <strong>Delivery OTP</strong> in the My Orders section.`,
+                buttonText: 'Great!'
+            });
+        }
+
+        function adminAssignPartnerSelect(orderId, partnerName) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (o) {
+                o.partner = partnerName;
+                setCloudData('martzo_orders', orders);
+                renderPartnerAssignedParcels();
+            }
+        }
+
+        function adminApproveReturn(orderId) {
+            const selectEl = document.getElementById(`retPartnerSelect_${orderId}`);
+            const assignedBoy = selectEl ? selectEl.value : 'Unassigned';
+            const partners = getCloudData('martzo_partners') || [];
+
+            let chosenBoy = assignedBoy;
+            if (chosenBoy === 'Unassigned') {
+                if (partners.length > 0) chosenBoy = partners[0].name;
+                else return showCustomAlert('Please add a delivery boy first.');
+            }
+
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (o) {
+                o.returnStatus = 'APPROVED';
+                o.returnPartner = chosenBoy;
+                if (!o.timestamps) o.timestamps = {};
+                o.timestamps.returnPickup = new Date().toLocaleString();
+                setCloudData('martzo_orders', orders);
+                loadAdminDashboard();
+                renderPartnerAssignedParcels();
+                renderMyOrders();
+                
+                showUniversalPopup({
+                    theme: 'feedback',
+                    icon: '🔄',
+                    title: 'Return Request Approved!',
+                    message: `Return request for Order <strong>${orderId}</strong> is approved. Pickup task assigned to <strong>"${chosenBoy}"</strong>.`,
+                    buttonText: 'Track Pickup'
+                });
+            }
+        }
+
+        function adminCompleteRefund(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (o) {
+                o.returnStatus = 'REFUNDED';
+                if (!o.timestamps) o.timestamps = {};
+                o.timestamps.refunded = new Date().toLocaleString();
+                setCloudData('martzo_orders', orders);
+                loadAdminDashboard();
+                renderMyOrders();
+                confetti({ particleCount: 140, spread: 85 });
+                
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '💰',
+                    title: 'Refund Successfully Processed!',
+                    message: `Amount for Order <strong>${orderId}</strong> has been refunded to the customer. Reverse logistics closed successfully!`,
+                    buttonText: 'All Settled ✅'
+                });
+            }
+        }
+
+        // =======================================================
+        // 6. DELIVERY BOY PORTAL (DELIVERIES & RETURN PICKUPS)
+        // =======================================================
+        function renderPartnerAssignedParcels() {
+            const selectedPartner = document.getElementById('partnerSelectDropdown').value;
+            const container = document.getElementById('partnerParcelsList');
+            const titleEl = document.getElementById('partnerParcelsTitle');
+
+            if (!selectedPartner) {
+                titleEl.innerText = "Assigned Tasks";
+                container.innerHTML = `<div style="background:#fff; padding:2rem; border-radius:12px; text-align:center; color:#64748b; border:1px solid var(--gray-border);">Select your name from the dropdown to see assigned tasks.</div>`;
+                return;
+            }
+
+            titleEl.innerText = `Tasks assigned to: ${selectedPartner}`;
+            const orders = getCloudData('martzo_orders') || [];
+            
+            const myDeliveries = orders.filter(o => o.partner === selectedPartner && o.status === 'OUT_FOR_DELIVERY');
+            const myPickups = orders.filter(o => o.returnPartner === selectedPartner && o.returnStatus === 'APPROVED');
+
+            if (myDeliveries.length === 0 && myPickups.length === 0) {
+                container.innerHTML = `<div style="background:#fff; padding:2rem; border-radius:12px; text-align:center; color:#64748b; border:1px solid var(--gray-border);">🎉 No active tasks pending for ${selectedPartner}!</div>`;
+                return;
+            }
+
+            let htmlContent = '';
+
+            myPickups.forEach(o => {
+                htmlContent += `
+                    <div style="background:#fffbeb; border:2px dashed #f59e0b; border-radius:14px; padding:1.2rem; margin-bottom:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                            <span class="badge" style="background:#fef3c7; color:#b45309; font-weight:800;">🔄 RETURN PICKUP TASK</span>
+                            <strong style="color:var(--primary-navy);">${o.id}</strong>
+                        </div>
+                        <p style="font-size:0.9rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.3rem;">Collect: ${o.item} (${o.price})</p>
+                        <p style="font-size:0.85rem; color:#475569;">👤 <strong>${o.name}</strong> (📞 <a href="tel:${o.phone}">${o.phone}</a>)</p>
+                        <p style="font-size:0.85rem; color:#64748b; margin-bottom:0.6rem;">📍 ${o.address} - ${o.pincode}</p>
+                        <p style="font-size:0.8rem; color:#b45309; font-weight:700; margin-bottom:0.8rem;">Reason: ${o.returnReason}</p>
+                        <button class="btn" style="background:#b45309; border-radius:8px; padding:0.6rem;" onclick="partnerConfirmPickupAction('${o.id}')">Confirm Parcel Collected (Pickup Done) 📦</button>
+                    </div>
+                `;
+            });
+
+            myDeliveries.forEach(o => {
+                const mapsQuery = encodeURIComponent(`Gumani Jharkhand ${o.address} ${o.pincode}`);
+                const isPrepaid = o.paymentMode === 'Prepaid';
+
+                htmlContent += `
+                    <div style="background:#fff; border:1px solid var(--gray-border); border-radius:14px; padding:1.2rem; margin-bottom:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem; border-bottom:1px solid #f1f5f9; padding-bottom:0.6rem;">
+                            <div>
+                                <span style="font-weight:800; font-size:1.1rem; color:var(--primary-navy);">${o.id}</span>
+                                <span class="badge" style="background:#e0e7ff; color:#3730a3; margin-left:6px;">${o.paymentMode}</span>
+                                <span class="badge" style="margin-left:4px;">${o.status}</span>
+                            </div>
+                            <div style="font-weight:800; color:var(--accent-orange); font-size:1.1rem;">${o.price}</div>
+                        </div>
+
+                        <div style="display:flex; gap:1rem; align-items:center; margin-bottom:0.8rem;">
+                            <img src="${o.image}" style="width:55px; height:55px; object-fit:cover; border-radius:8px;">
+                            <div>
+                                <h4 style="font-size:0.95rem; color:var(--primary-navy); font-weight:700;">${o.item}</h4>
+                                <p style="font-size:0.85rem; color:#475569;">👤 <strong>${o.name}</strong> | 📞 ${o.phone}</p>
+                                <p style="font-size:0.85rem; color:#64748b;">📍 ${o.address} - ${o.pincode}</p>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:0.8rem; border-radius:10px;">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" class="btn" style="background:#0284c7; width:auto; text-decoration:none; padding:0.5rem 0.8rem;">🗺️ Map Route</a>
+                            <a href="tel:${o.phone}" class="btn" style="background:#475569; width:auto; text-decoration:none; padding:0.5rem 0.8rem;">📞 Call Customer</a>
+                            
+                            <div style="flex:1; min-width:200px; display:flex; gap:0.4rem; justify-content:flex-end;">
+                                ${isPrepaid ? `
+                                    <input type="text" id="otp_input_${o.id}" placeholder="Enter 4-Digit OTP" maxlength="4" style="width:130px; padding:0.45rem; border:1px solid #cbd5e1; border-radius:6px; font-weight:bold; letter-spacing:2px; font-size:0.85rem;">
+                                    <button class="btn" style="background:var(--success); width:auto; padding:0.45rem 0.8rem;" onclick="partnerVerifyOtpAction('${o.id}')">Verify & Deliver ✅</button>
+                                ` : `
+                                    <button class="btn" style="background:var(--success); width:auto; padding:0.45rem 1rem;" onclick="partnerDeliverCodAction('${o.id}')">Collect Cash & Deliver ✅</button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        function partnerConfirmPickupAction(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === orderId);
+            if (!o) return;
+
+            o.returnStatus = 'PICKUP_DONE';
+            setCloudData('martzo_orders', orders);
+            renderPartnerAssignedParcels();
+            loadAdminDashboard();
+            renderMyOrders();
+            
+            showUniversalPopup({
+                theme: 'success',
+                icon: '📦',
+                title: 'Pickup Confirmed!',
+                message: `Parcel for Order <strong>${orderId}</strong> has been collected from customer. Admin will now process the refund.`,
+                buttonText: 'Great Job!'
+            });
+        }
+
+        function partnerVerifyOtpAction(orderId) {
+            const input = document.getElementById(`otp_input_${orderId}`);
+            const entered = input ? input.value.trim() : '';
+            if (!entered) return showCustomAlert('Please ask customer for OTP and enter it.');
+
+            const orders = getCloudData('martzo_orders') || [];
+            const order = orders.find(o => o.id === orderId);
+
+            // ONLY THIS AUTOMATICALLY GENERATED SYSTEM OTP WORKS
+            if (order && order.otp === entered) {
+                order.status = 'DELIVERED';
+                if (!order.timestamps) order.timestamps = {};
+                order.timestamps.delivered = new Date().toLocaleString();
+                setCloudData('martzo_orders', orders);
+                renderPartnerAssignedParcels();
+                renderMyOrders();
+                loadAdminDashboard();
+                confetti({ particleCount: 140, spread: 85 });
+                
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '🏁',
+                    title: 'Order Delivered Successfully!',
+                    message: `Prepaid Order <strong>${orderId}</strong> has been securely delivered via OTP authentication.`,
+                    buttonText: 'Awesome!'
+                });
+            } else {
+                showCustomAlert('❌ Incorrect Delivery OTP! Delivery executive can only complete this delivery with the exact OTP shown in the customer\'s tracking section.');
+            }
+        }
+
+        function partnerDeliverCodAction(orderId) {
+            if (!confirm(`Confirm delivery for ${orderId}? Ensure cash has been collected.`)) return;
+            const orders = getCloudData('martzo_orders') || [];
+            const order = orders.find(o => o.id === orderId);
+
+            if (order) {
+                order.status = 'DELIVERED';
+                if (!order.timestamps) order.timestamps = {};
+                order.timestamps.delivered = new Date().toLocaleString();
+                setCloudData('martzo_orders', orders);
+                renderPartnerAssignedParcels();
+                renderMyOrders();
+                loadAdminDashboard();
+                confetti({ particleCount: 140, spread: 85 });
+                
+                showUniversalPopup({
+                    theme: 'success',
+                    icon: '💵',
+                    title: 'COD Delivery Completed!',
+                    message: `Cash has been collected and Order <strong>${orderId}</strong> is marked DELIVERED successfully!`,
+                    buttonText: 'Well Done!'
+                });
+            }
+        }
+
+        // =======================================================
+        // 7. CUSTOMER MY ORDERS & PRO TRACKER + OTP & RETURN
+        // =======================================================
+        function renderMyOrders() {
+            const orders = getCloudData('martzo_orders') || [];
+            const container = document.getElementById('myOrdersContainer');
+            const myOrders = currentCustomerId ? orders.filter(o => o.customerId === currentCustomerId || !o.customerId) : orders;
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `<div style="background:#fff; padding:2rem; text-align:center; border-radius:10px; color:#64748b;">No orders placed yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = myOrders.map(ord => {
+                let badgeStyle = ord.status === 'DELIVERED' ? 'background-color:#d1fae5; color:#065f46;' : (ord.status === 'CANCELLED' ? 'background-color:#fee2e2; color:#991b1b;' : 'background-color:#dbeafe; color:#1e40af;');
+                if (ord.returnStatus && ord.returnStatus !== 'NONE') {
+                    badgeStyle = 'background-color:#fef3c7; color:#92400e;';
+                }
+
+                return `
+                    <div class="order-list-item" onclick="openOrderDetailsModal('${ord.id}')">
+                        <div class="order-item-left">
+                            <div class="order-thumb-sm"><img src="${ord.image}" alt="${ord.item}"></div>
+                            <div>
+                                <h4 style="font-size:0.95rem; font-weight:700; color:var(--primary-navy);">${ord.item}</h4>
+                                <p style="font-size:0.75rem; color:#64748b;">ID: <strong>${ord.id}</strong> | Placed: ${ord.timestamps?.placed || 'N/A'}</p>
+                                ${ord.status === 'OUT_FOR_DELIVERY' ? `<p style="font-size:0.75rem; color:#ea580c; font-weight:800;">🔑 OTP Available (Tap to view)</p>` : ''}
+                                ${ord.rating ? `<p style="font-size:0.75rem; color:#f59e0b; font-weight:700;">Your Rating: ⭐ ${ord.rating}/5</p>` : ''}
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge" style="${badgeStyle}">${ord.returnStatus && ord.returnStatus !== 'NONE' ? 'RETURN: ' + ord.returnStatus : ord.status}</span>
+                            <p style="font-size:0.7rem; color:#94a3b8; margin-top:0.2rem;">Live Tracker ➔</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openOrderDetailsModal(orderId) {
+            const orders = getCloudData('martzo_orders') || [];
+            const ord = orders.find(o => o.id === orderId);
+            if (!ord) return;
+
+            viewingOrderId = orderId;
+            document.getElementById('modalOrderId').innerText = `Order ID: ${ord.id}`;
+            document.getElementById('modalOrderDate').innerText = `Placed on: ${ord.timestamps?.placed || 'N/A'}`;
+            document.getElementById('modalOrderStatusBadge').innerHTML = `<span class="badge">${ord.returnStatus && ord.returnStatus !== 'NONE' ? 'RETURN ' + ord.returnStatus : ord.status}</span>`;
+            document.getElementById('modalOrderImg').src = ord.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500';
+            document.getElementById('modalOrderItemName').innerText = ord.item;
+            document.getElementById('modalOrderPrice').innerText = ord.price;
+            document.getElementById('modalOrderMode').innerHTML = `<span class="badge" style="background:#e0e7ff; color:#3730a3;">${ord.paymentMode}</span>`;
+            document.getElementById('modalOrderAddress').innerText = `${ord.name}, ${ord.address} - Pincode: ${ord.pincode}`;
+            document.getElementById('modalOrderPartner').innerText = ord.partner;
+            document.getElementById('modalOrderReturnPolicyText').innerText = `Return Policy: ${ord.returnPolicy || 'Non-Returnable'}`;
+
+            // 🔑 OUT FOR DELIVERY OTP CARD IN TRACKING (ONLY SHOWN FOR OUT_FOR_DELIVERY PREPAID ORDERS)
+            const outOtpContainer = document.getElementById('modalOutForDeliveryOtpContainer');
+            if (ord.paymentMode === 'Prepaid' && ord.status === 'OUT_FOR_DELIVERY') {
+                document.getElementById('modalOrderOtpText').innerText = ord.otp;
+                outOtpContainer.style.display = 'block';
+            } else {
+                outOtpContainer.style.display = 'none';
+            }
+
+            // Customer cancel section
+            document.getElementById('modalCustomerCancelSection').style.display = (ord.status === 'NEW') ? 'block' : 'none';
+
+            // Return Section Visibility
+            const isReturnable = ord.returnPolicy && !ord.returnPolicy.includes('Non-Returnable');
+            const returnInitiateSec = document.getElementById('modalReturnInitiateSection');
+            const returnReasonBox = document.getElementById('returnReasonBox');
+            returnReasonBox.style.display = 'none';
+
+            if (ord.status === 'DELIVERED' && isReturnable && (!ord.returnStatus || ord.returnStatus === 'NONE')) {
+                returnInitiateSec.style.display = 'block';
+            } else {
+                returnInitiateSec.style.display = 'none';
+            }
+
+            // Need Help button visible on delivered
+            document.getElementById('modalDeliveredHelpSection').style.display = (ord.status === 'DELIVERED') ? 'flex' : 'none';
+
+            // Rating & Review Section (Color-Coded)
+            const ratingSec = document.getElementById('modalRatingSection');
+            if (ord.status === 'DELIVERED') {
+                ratingSec.style.display = 'block';
+                selectedStarRating = ord.rating || 0;
+                highlightDynamicStars(selectedStarRating);
+                document.getElementById('reviewCommentText').value = ord.review || '';
+            } else {
+                ratingSec.style.display = 'none';
+            }
+
+            // SATELLITE TRACKER TIMELINE
+            const t = ord.timestamps || {};
+            const timelineEl = document.getElementById('modalTimelineContainer');
+            const proCategory = document.getElementById('modalProStatusCategory');
+
+            if (ord.status === 'CANCELLED') {
+                proCategory.innerText = "SHIPMENT VOID";
+                timelineEl.innerHTML = `<div style="color:var(--danger); font-weight:700; text-align:center; padding:1.5rem;">❌ This order has been CANCELLED.</div>`;
+            } else if (ord.returnStatus && ord.returnStatus !== 'NONE') {
+                proCategory.innerText = "REVERSE LOGISTICS";
+                const retSteps = ['REQUESTED', 'APPROVED', 'PICKUP_DONE', 'REFUNDED'];
+                let retIdx = retSteps.indexOf(ord.returnStatus);
+
+                timelineEl.innerHTML = `
+                    <div class="v-step ${retIdx >= 0 ? 'completed' : ''}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Return Requested 📋</div>
+                        <div class="v-time">${t.returnRequested || 'Submitted'}</div>
+                    </div>
+                    <div class="v-step ${retIdx >= 1 ? 'completed' : (retIdx === 1 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Pickup Agent Assigned & Out 🛵 ${retIdx === 1 ? '<span class="vehicle-neon-badge">' + ord.returnPartner + '</span>' : ''}</div>
+                        <div class="v-time">${t.returnPickup || (retIdx >= 1 ? 'Pickup in progress' : 'Awaiting Approval')}</div>
+                    </div>
+                    <div class="v-step ${retIdx >= 2 ? 'completed' : (retIdx === 2 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Parcel Picked Up (Done) 📦</div>
+                        <div class="v-time">${retIdx >= 2 ? 'Collected by ' + ord.returnPartner : 'Pending Pickup'}</div>
+                    </div>
+                    <div class="v-step ${retIdx >= 3 ? 'completed' : (retIdx === 3 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Refund Completed 💰</div>
+                        <div class="v-time">${t.refunded || 'Transferred to source account'}</div>
+                    </div>
+                `;
+            } else {
+                proCategory.innerText = "OUTBOUND COURIER";
+                const statuses = ['NEW', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED'];
+                let currentIdx = statuses.indexOf(ord.status);
+
+                timelineEl.innerHTML = `
+                    <div class="v-step ${currentIdx >= 0 ? 'completed' : ''}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Order Placed & Registered 📦</div>
+                        <div class="v-time">${t.placed || 'Done'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 1 ? 'completed' : (currentIdx === 1 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Admin Verified & Confirmed ✅</div>
+                        <div class="v-time">${t.confirmed || 'Pending'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 2 ? 'completed' : (currentIdx === 2 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Seller Packed & Prepared 🏷️</div>
+                        <div class="v-time">${t.preparing || 'Packaging in progress'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 3 ? 'completed' : (currentIdx === 3 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Out for Delivery (OTP Active) 🛵 ${currentIdx === 3 ? '<span class="vehicle-neon-badge">' + ord.partner + '</span>' : ''}</div>
+                        <div class="v-time">${t.outForDelivery || 'Awaiting Hub Dispatch'}</div>
+                    </div>
+                    <div class="v-step ${ord.status === 'DELIVERED' ? 'completed' : ''}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Delivered at Doorstep 🏁</div>
+                        <div class="v-time">${t.delivered || '30 Min Express Target'}</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('orderDetailsModal').classList.add('show');
+        }
+
+        function closeOrderDetailsModal() {
+            document.getElementById('orderDetailsModal').classList.remove('show');
+        }
+
+        function openReturnRequestForm() {
+            document.getElementById('returnReasonBox').style.display = 'block';
+        }
+
+        function closeReturnRequestForm() {
+            document.getElementById('returnReasonBox').style.display = 'none';
+        }
+
+        function submitReturnRequestAction() {
+            const reason = document.getElementById('returnReasonSelect').value;
+            const comment = document.getElementById('returnCommentText').value.trim();
+
+            const orders = getCloudData('martzo_orders') || [];
+            const o = orders.find(x => x.id === viewingOrderId);
+            if (!o) return;
+
+            o.returnStatus = 'REQUESTED';
+            o.returnReason = reason + (comment ? ` (${comment})` : '');
+            if (!o.timestamps) o.timestamps = {};
+            o.timestamps.returnRequested = new Date().toLocaleString();
+
+            setCloudData('martzo_orders', orders);
+            closeReturnRequestForm();
+            openOrderDetailsModal(viewingOrderId);
+            renderMyOrders();
+            loadAdminDashboard();
+            
+            showUniversalPopup({
+                theme: 'feedback',
+                icon: '🔄',
+                title: 'Return Request Registered!',
+                message: `Return request for Order <strong>${viewingOrderId}</strong> has been forwarded to the Admin team. We will assign a pickup executive soon.`,
+                buttonText: 'Track Status'
+            });
+        }
+
+        // Dynamic Color-Coded Star Rating
+        const ratingColorMap = {
+            1: { color: '#ef4444', text: '1/5 Poor 😞' },
+            2: { color: '#f97316', text: '2/5 Fair 😐' },
+            3: { color: '#f59e0b', text: '3/5 Good 🙂' },
+            4: { color: '#84cc16', text: '4/5 Very Good 😊' },
+            5: { color: '#10b981', text: '5/5 Excellent! 🌟' }
+        };
+
+        function setDynamicRating(stars) {
+            selectedStarRating = stars;
+            highlightDynamicStars(stars);
+        }
+
+        function highlightDynamicStars(stars) {
+            const starButtons = document.querySelectorAll('#starRatingContainer .star-rating-btn');
+            const labelEl = document.getElementById('starRatingLabel');
+            
+            if (stars === 0) {
+                starButtons.forEach(btn => { btn.style.color = '#cbd5e1'; btn.style.textShadow = 'none'; });
+                labelEl.innerText = 'Tap stars';
+                labelEl.style.color = '#64748b';
+                return;
+            }
+
+            const currentConfig = ratingColorMap[stars];
+            starButtons.forEach((btn, idx) => {
+                if (idx < stars) {
+                    btn.style.color = currentConfig.color;
+                    btn.style.textShadow = `0 0 15px ${currentConfig.color}99`;
+                } else {
+                    btn.style.color = '#cbd5e1';
+                    btn.style.textShadow = 'none';
+                }
+            });
+
+            labelEl.innerText = currentConfig.text;
+            labelEl.style.color = currentConfig.color;
+        }
+
+        function submitProductReview() {
+            const comment = document.getElementById('reviewCommentText').value.trim();
+            if (selectedStarRating === 0) return showCustomAlert('⭐ Please select stars before submitting!');
+            if (!comment) return showCustomAlert('✍️ Please write a short feedback comment!');
+
+            const orders = getCloudData('martzo_orders') || [];
+            const ord = orders.find(o => o.id === viewingOrderId);
+            if (!ord) return;
+
+            ord.rating = selectedStarRating;
+            ord.review = comment;
+            setCloudData('martzo_orders', orders);
+
+            const products = getCloudData('martzo_products');
+            const prod = products.find(p => p.name.toLowerCase() === ord.item.toLowerCase());
+            if (prod) {
+                if (!prod.reviews) prod.reviews = [];
+                prod.reviews.push({ rating: selectedStarRating, comment: comment });
+                setCloudData('martzo_products', products);
+            }
+
+            confetti({ particleCount: 160, spread: 90, origin: { y: 0.55 } });
+            
+            showUniversalPopup({
+                theme: 'feedback',
+                icon: '🌟',
+                title: 'Thank You for Your Feedback!',
+                message: `Your rating of <strong>${selectedStarRating} Stars</strong> and valuable feedback for <strong>"${ord.item}"</strong> have been successfully published on MARTZO!`,
+                customContent: `
+                    <div style="background:rgba(255,255,255,0.85); padding:1rem; border-radius:14px; border:1px solid #fdba74; font-size:0.95rem; color:#9a3412;">
+                        <i>"${comment}"</i>
+                    </div>
+                `,
+                buttonText: 'Awesome! 🚀',
+                onConfirm: () => {
+                    closeOrderDetailsModal();
+                    renderCustomerStore();
+                    renderMyOrders();
+                }
+            });
+        }
+
+        function customerCancelOrder() {
+            const orders = getCloudData('martzo_orders') || [];
+            const ord = orders.find(o => o.id === viewingOrderId);
+            if (!ord) return;
+
+            if (ord.status !== 'NEW') {
+                showCustomAlert('❌ Order cannot be cancelled now as confirmation has started.');
+                return;
+            }
+
+            if (confirm('Are you sure you want to cancel this order?')) {
+                ord.status = 'CANCELLED';
+                setCloudData('martzo_orders', orders);
+                closeOrderDetailsModal();
+                renderMyOrders();
+                
+                showUniversalPopup({
+                    theme: 'alert',
+                    icon: '🗑️',
+                    title: 'Order Cancelled',
+                    message: `Order <strong>${viewingOrderId}</strong> has been cancelled.`,
+                    buttonText: 'OK'
+                });
+            }
+        }
+
+        function connectSupportAgent(issueType) {
+            const agents = getCloudData('martzo_agents') || [];
+            if (!agents || agents.length === 0) return alert('No support agents configured.');
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+            window.open(`https://wa.me/${randomAgent.phone}?text=${encodeURIComponent('Hello, I need assistance regarding ' + issueType)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
