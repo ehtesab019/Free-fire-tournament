@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARTZO - Ultimate Complete Local Super App (All Features Included)</title>
+    <!-- Google Fonts & Confetti Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --accent-orange: #f97316;
+            --accent-purple: #9333ea;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --white: #ffffff;
+            --gray-border: #e2e8f0;
+            --success: #10b981;
+            --whatsapp: #25d366;
+            --danger: #ef4444;
+            --flipkart-blue: #2874f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background-color: var(--primary-navy);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.15);
+        }
+
+        .navbar .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .nav-links button, .nav-links a {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-links button:hover, .nav-links button.active, .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .cart-badge {
+            background: var(--accent-orange);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-navy), var(--accent-purple));
+            color: var(--white);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 { font-size: 2.2rem; margin-bottom: 0.3rem; font-weight: 800; }
+        .hero p { color: #cbd5e1; font-size: 0.95rem; }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+        }
+
+        .cat-btn {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            color: var(--text-main);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-btn:hover, .cat-btn.active-cat {
+            background: var(--primary-navy);
+            color: var(--white);
+            border-color: var(--primary-navy);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(0,0,0,0.06); }
+
+        .card-img { height: 120px; background-color: #f1f5f9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-body { padding: 0.8rem; }
+        .card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.1rem; color: var(--primary-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-desc { font-size: 0.75rem; color: #64748b; margin-bottom: 0.4rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .price { color: var(--accent-orange); font-weight: 800; font-size: 1rem; margin-bottom: 0.6rem; }
+
+        .button-group { display: flex; gap: 0.3rem; }
+
+        .btn {
+            background-color: var(--accent-purple);
+            color: var(--white);
+            border: none;
+            padding: 0.45rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-cart { background-color: var(--secondary-navy); }
+        .btn-buy { background-color: var(--accent-orange); }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 0.4rem; text-decoration: none; }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 0.3rem; font-size: 0.85rem; color: var(--primary-navy); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.7rem; border: 1px solid var(--gray-border); border-radius: 6px; outline: none; background: #fff; font-size: 0.9rem;
+        }
+
+        .vertical-tracker { position: relative; padding-left: 1.8rem; margin-top: 1rem; }
+        .vertical-tracker::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: #cbd5e1; }
+        .v-step { position: relative; margin-bottom: 1.2rem; }
+        .v-step:last-child { margin-bottom: 0; }
+        
+        .v-dot {
+            position: absolute; left: -1.8rem; top: 2px; width: 14px; height: 14px;
+            border-radius: 50%; background: #cbd5e1; border: 2px solid white; transition: all 0.3s ease;
+        }
+        .v-step.completed .v-dot { background: var(--flipkart-blue); box-shadow: 0 0 0 3px rgba(40, 116, 240, 0.2); }
+        .v-step.active .v-dot { background: var(--accent-orange); box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.3); animation: pulseGlow 1.5s infinite; }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+
+        .v-title { font-size: 0.9rem; font-weight: 700; color: #64748b; }
+        .v-step.completed .v-title, .v-step.active .v-title { color: var(--primary-navy); }
+        .v-time { font-size: 0.75rem; color: #64748b; font-weight: 600; margin-top: 0.1rem; }
+        .vehicle-icon-move { font-size: 1.2rem; display: inline-block; animation: bounceVeh 1s infinite alternate; margin-left: 5px; }
+        @keyframes bounceVeh { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+        .order-list-item {
+            background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s;
+        }
+        .order-list-item:hover { border-color: var(--flipkart-blue); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .order-item-left { display: flex; gap: 0.8rem; align-items: center; }
+        .order-thumb-sm { width: 50px; height: 50px; border-radius: 6px; overflow: hidden; background: #f1f5f9; flex-shrink: 0; }
+        .order-thumb-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+        .help-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .help-card { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
+        .table-container { background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; overflow-x: auto; margin-bottom: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--gray-border); font-size: 0.9rem; }
+        th { background-color: #f1f5f9; font-weight: 700; color: var(--primary-navy); }
+
+        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: #dbeafe; color: #1e40af; text-transform: uppercase; }
+        .badge-delivered { background-color: #d1fae5; color: #065f46; }
+        .badge-cancelled { background-color: #fee2e2; color: #991b1b; }
+
+        .star-rating-btn { font-size: 1.6rem; cursor: pointer; color: #cbd5e1; transition: color 0.2s; }
+        .star-rating-btn.active { color: #f59e0b; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 2.5rem; border-radius: 24px; max-width: 520px; width: 90%;
+            box-shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.35);
+            max-height: 90vh; overflow-y: auto;
+            transform: scale(0.85) translateY(20px); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.show .modal-card { transform: scale(1) translateY(0); }
+
+        .alert-modal-card { background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 2px solid #fecdd3; text-align: center; }
+
+        .footer-gumani {
+            background: var(--primary-navy); color: #94a3b8; padding: 2rem 1.5rem; text-align: center; margin-top: 3rem; border-radius: 12px 12px 0 0; font-size: 0.9rem;
+        }
+        .footer-gumani strong { color: var(--accent-orange); }
+
+        @media (min-width: 1024px) {
+            .container { padding: 0 2rem; }
+            .grid { grid-template-columns: repeat(5, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="brand">MARTZO</a>
+        <div class="nav-links">
+            <button onclick="switchTab('customer')" class="active" id="btn-customer">🛒 Store</button>
+            <button onclick="switchTab('cart')" id="btn-cart">🛍️ Cart <span id="cartBadgeCount" class="cart-badge">0</span></button>
+            <button onclick="switchTab('myorders')" id="btn-myorders">📦 My Orders</button>
+            <button onclick="switchTab('helpcenter')" id="btn-helpcenter">🆘 Help</button>
+            <button onclick="switchTab('seller')" id="btn-seller">🔴 Seller Portal</button>
+            <a href="admin.html" id="btn-admin-link">⚙️ Admin Portal</a>
+            <button onclick="switchTab('partner')" id="btn-partner">🛵 Partner</button>
+        </div>
+    </nav>
+
+    <!-- CUSTOMER PROFILE REGISTRATION MODAL -->
+    <div id="customerProfileModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center;">
+            <div style="width: 70px; height: 70px; background: #e0e7ff; color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.2rem auto;">👤</div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;">Customer Registration</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">Enter your Name and Mobile Number to generate your unique Customer ID and start shopping.</p>
+            
+            <div class="form-group" style="text-align: left;">
+                <label>Full Name</label>
+                <input type="text" id="regCustomerName" placeholder="e.g. Rohit Kumar">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Mobile Number (WhatsApp)</label>
+                <input type="text" id="regCustomerPhone" placeholder="e.g. 9876543210" maxlength="10">
+            </div>
+            <button class="btn btn-buy" style="border-radius: 12px; padding: 0.8rem;" onclick="registerCustomerProfile()">Register & Continue 🚀</button>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAILS POPUP MODAL -->
+    <div id="productDetailModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left;">
+            <div id="modalProductImage" style="height: 220px; background: #e2e8f0; border-radius: 16px; overflow: hidden; margin-bottom: 1.2rem;">
+                <img id="detailImg" src="" alt="Product" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <div id="modalProductCat" style="font-size: 0.75rem; font-weight: 800; color: var(--accent-purple); text-transform: uppercase;"></div>
+                <div id="modalReturnBadge" class="badge" style="background:#e0e7ff; color:#3730a3;"></div>
+            </div>
+            <h2 id="detailTitle" style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;"></h2>
+            <div id="detailPrice" style="color: var(--accent-orange); font-weight: 800; font-size: 1.4rem; margin-bottom: 1rem;"></div>
+            <div id="detailDeliveryFee" style="font-size: 0.85rem; font-weight: 700; color: var(--success); margin-bottom: 1rem; background:#f0fdf4; padding:0.4rem 0.8rem; border-radius:6px; display:inline-block;"></div>
+            <p id="detailDesc" style="color: #64748b; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;"></p>
+            
+            <div id="productReviewsSection" style="background:#f8fafc; padding:1rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--gray-border);">
+                <p style="font-size:0.85rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.4rem;">⭐ Customer Ratings & Reviews:</p>
+                <div id="productReviewsList" style="font-size:0.85rem; color:#475569;">No ratings yet. Be the first to review!</div>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem;">
+                <button class="btn btn-cart" onclick="addCurrentProductToCartFromModal()">Add to Cart</button>
+                <button class="btn btn-buy" onclick="buyCurrentProductFromModal()">Buy Now 🚀</button>
+            </div>
+            <button class="btn" style="background: #e2e8f0; color: #334155; margin-top: 0.8rem;" onclick="closeProductDetailModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- DETAILED ORDER TRACKING MODAL WITH MOVING VEHICLE -->
+    <div id="orderDetailsModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-border); padding-bottom:1rem; margin-bottom:1rem;">
+                <div>
+                    <h3 id="modalOrderId" style="font-size:1.2rem; font-weight:800; color:var(--primary-navy);"></h3>
+                    <p id="modalOrderDate" style="font-size:0.8rem; color:#64748b;"></p>
+                </div>
+                <div id="modalOrderStatusBadge"></div>
+            </div>
+
+            <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1.2rem; background:#f8fafc; padding:0.8rem; border-radius:10px;">
+                <img id="modalOrderImg" src="" style="width:60px; height:60px; object-fit:cover; border-radius:8px;">
+                <div>
+                    <h4 id="modalOrderItemName" style="font-size:1rem; font-weight:700; color:var(--primary-navy);"></h4>
+                    <p style="font-size:0.85rem; color:#64748b;">Price: <strong id="modalOrderPrice"></strong> | Payment: <span id="modalOrderMode"></span></p>
+                </div>
+            </div>
+
+            <div style="font-size:0.85rem; color:#475569; margin-bottom:1.2rem;">
+                <p>📍 <strong>Delivery Address:</strong> <span id="modalOrderAddress"></span></p>
+                <p style="margin-top:0.3rem;">🛵 <strong>Delivery Partner:</strong> <span id="modalOrderPartner"></span></p>
+            </div>
+
+            <div id="modalOtpContainer" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; padding:0.8rem; border-radius:8px; margin-bottom:1.2rem;">
+                <p style="font-weight:700; color:var(--success); font-size:0.9rem;">🔑 Secure Delivery OTP: <span id="modalOrderOtp" style="font-size:1.1rem; color:var(--primary-navy); letter-spacing:2px;"></span></p>
+            </div>
+
+            <div style="background:#f8fafc; padding:1.2rem; border-radius:12px; border:1px solid var(--gray-border); margin-bottom:1.5rem;">
+                <p style="font-size:0.9rem; font-weight:700; color:var(--primary-navy); margin-bottom:0.5rem;">Live Satellite Tracking with Vehicle Position:</p>
+                <div class="vertical-tracker" id="modalTimelineContainer"></div>
+            </div>
+
+            <div id="modalCustomerCancelSection" style="margin-bottom:1rem; display:none;">
+                <button class="btn" style="background:var(--danger); border-radius:10px; padding:0.7rem;" onclick="customerCancelOrder()">❌ Cancel Order (Allowed before preparation)</button>
+            </div>
+
+            <div id="modalRatingSection" style="display:none; background:#fffbeb; border:1px solid #fef3c7; padding:1rem; border-radius:10px; margin-bottom:1rem;">
+                <p style="font-weight:700; color:#b45309; font-size:0.9rem; margin-bottom:0.4rem;">⭐ Rate & Review Your Experience:</p>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.6rem;" id="starRatingContainer">
+                    <span class="star-rating-btn" onclick="setRating(1)">★</span>
+                    <span class="star-rating-btn" onclick="setRating(2)">★</span>
+                    <span class="star-rating-btn" onclick="setRating(3)">★</span>
+                    <span class="star-rating-btn" onclick="setRating(4)">★</span>
+                    <span class="star-rating-btn" onclick="setRating(5)">★</span>
+                </div>
+                <textarea id="reviewCommentText" rows="2" placeholder="Write something about product quality (Required)..." style="width:100%; padding:0.5rem; border:1px solid var(--gray-border); border-radius:6px; font-size:0.85rem; margin-bottom:0.5rem;"></textarea>
+                <button class="btn" style="background:var(--primary-navy); border-radius:6px; padding:0.5rem; font-size:0.85rem;" onclick="submitProductReview()">Submit Review</button>
+            </div>
+
+            <button class="btn" style="background:var(--secondary-navy); border-radius:12px; padding:0.8rem;" onclick="closeOrderDetailsModal()">Close Tracker</button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT ADDRESS MODAL -->
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.4rem;">Delivery Address & Checkout</h2>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1.2rem;">Enter your exact address and pincode for Gumani shipment.</p>
+            
+            <div class="form-group"><label>Full Name</label><input type="text" id="checkoutName" placeholder="e.g. Amit Kumar"></div>
+            <div class="form-group"><label>WhatsApp Number</label><input type="text" id="checkoutPhone" placeholder="+91 9876543210"></div>
+            <div class="form-group"><label>Complete Address (Gumani)</label><textarea id="checkoutAddress" rows="2" placeholder="House no, Street, Landmark..."></textarea></div>
+            <div class="form-group"><label>Pincode (e.g. 816109)</label><input type="text" id="checkoutPincode" placeholder="816109" maxlength="6"></div>
+            
+            <div class="form-group">
+                <label>Select Payment Mode</label>
+                <select id="checkoutPaymentMode">
+                    <option value="Prepaid">Prepaid Order (Requires Delivery OTP)</option>
+                    <option value="COD">Cash on Delivery (COD - No OTP needed)</option>
+                </select>
+            </div>
+
+            <div style="background: #f8fafc; padding: 0.9rem; border-radius: 8px; margin-bottom: 1.2rem; border: 1px solid var(--gray-border);">
+                <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary-navy);">Item: <span id="checkoutItemName" style="color:var(--accent-orange);"></span></p>
+                <p style="font-size: 0.9rem; font-weight: 700; color: #475569;">Delivery Fee: <span id="checkoutDeliveryFeeText" style="color:var(--success);">Free</span></p>
+                <p style="font-size: 1rem; font-weight: 800; color: var(--primary-navy); margin-top:0.3rem;">Total Payable: <span id="checkoutItemPrice" style="color:var(--success);"></span></p>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem;">
+                <button class="btn" style="background:#cbd5e1; color:#334155;" onclick="closeCheckoutModal()">Cancel</button>
+                <button class="btn btn-buy" onclick="confirmAndSendWhatsApp()">Place Order 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR ALERT MODAL -->
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-card alert-modal-card">
+            <div style="width: 75px; height: 75px; background: #ffe4e6; color: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.2rem auto; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);">⚠️</div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #9f1239; margin-bottom: 0.5rem;">Incomplete Details!</h2>
+            <p id="errorModalText" style="color: #881337; margin-bottom: 1.8rem; font-size: 0.95rem; font-weight: 600; line-height: 1.5;"></p>
+            <button class="btn" style="background: #e11d48; color: white; padding: 0.8rem; border-radius: 12px; font-size: 1rem;" onclick="closeErrorModal()">Got it, Let's Fill It ✍️</button>
+        </div>
+    </div>
+
+    <!-- SUCCESS / WHATSAPP MODAL -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center;">
+            <div style="width: 75px; height: 75px; background: #d1fae5; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.2rem auto; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">🎉</div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.4rem;">Order Placed Successfully!</h2>
+            <p id="successModalText" style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem;"></p>
+            
+            <div id="whatsappBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 1.2rem; border-radius: 16px; margin-bottom: 1.5rem; display: none;">
+                <p style="font-size: 0.9rem; color: #166534; font-weight: 600; margin-bottom: 0.8rem;">💬 Send payment screenshot on WhatsApp (`9798377142`):</p>
+                <a id="whatsappPayBtn" href="#" target="_blank" class="btn btn-whatsapp" style="border-radius:12px; padding:0.8rem;">
+                    <span>💬 Open WhatsApp & Pay Now</span>
+                </a>
+            </div>
+
+            <button class="btn" style="background: var(--primary-navy); border-radius: 12px; padding: 0.8rem;" onclick="closeSuccessModalAndOpenMyOrders()">View My Orders Tracker</button>
+        </div>
+    </div>
+
+    <!-- 1. CUSTOMER STOREFRONT -->
+    <div id="tab-customer" class="container tab-content active">
+        <header class="hero">
+            <h1>MARTZO STORE <span id="customerUserBadge" style="font-size:0.8rem; background:rgba(255,255,255,0.2); padding:0.2rem 0.6rem; border-radius:6px; display:inline-block; margin-left:10px;"></span></h1>
+            <p>Everything You Need, One App. Fast local delivery in Gumani.</p>
+        </header>
+
+        <div class="category-tabs">
+            <button class="cat-btn active-cat" onclick="filterStoreCategory('All', this)">🌟 All</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Grocery', this)">🥦 Groceries</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Food', this)">🍔 Food</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Clothing', this)">👕 Clothing</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Electronics', this)">🔌 Electronics</button>
+            <button class="cat-btn" onclick="filterStoreCategory('Services', this)">🛠️ Services</button>
+        </div>
+
+        <h2 id="currentCategoryTitle" style="margin-bottom: 1.2rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">All Products</h2>
+        <div class="grid" id="customerProductGrid"></div>
+    </div>
+
+    <!-- 2. CART TAB -->
+    <div id="tab-cart" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">🛍️ Your Shopping Cart</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">Review items added to your cart before checkout.</p>
+        
+        <div style="background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div id="cartItemsContainer" style="margin-bottom:1.5rem; color:#64748b;">Your cart is empty.</div>
+            <div id="cartCheckoutSec" style="display:none; border-top:1px solid var(--gray-border); padding-top:1rem;">
+                <p style="font-weight:700; font-size: 1.1rem; margin-bottom:1rem;">Total Amount: <span id="fullCartTotal" style="color:var(--accent-orange);">₹0</span></p>
+                <button class="btn btn-buy" style="max-width: 300px; border-radius: 12px; padding: 0.8rem;" onclick="openCartCheckoutModal()">Proceed to Checkout 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MY ORDERS SECTION -->
+    <div id="tab-myorders" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">📦 My Orders</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">Tap on any order to view live glowing vehicle tracking and timestamps.</p>
+        <div id="myOrdersContainer"></div>
+    </div>
+
+    <!-- 4. HELP CENTER SECTION -->
+    <div id="tab-helpcenter" class="container tab-content">
+        <header class="hero" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+            <h1>MARTZO HELP CENTER</h1>
+            <p>Need help with Return, Refund, Delivery or Technical Error? We are here 24/7.</p>
+        </header>
+
+        <div class="help-grid">
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">🔄 Return & Refund</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Got a damaged item or eligible return? Food/Grocery items are non-returnable.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Return / Refund Query')" style="border-radius:10px;">💬 Connect Support for Return</button>
+            </div>
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">🛵 Delivery Delay / Status</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Check your shipment progress or coordinate with your delivery partner.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Delivery Assistance')" style="border-radius:10px;">💬 Connect Support for Delivery</button>
+            </div>
+            <div class="help-card">
+                <h3 style="color:var(--primary-navy); font-weight:800; margin-bottom:0.5rem;">⚙️ Technical Error / App Bug</h3>
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem;">Facing issues placing orders or uploading products? Report a technical bug.</p>
+                <button class="btn btn-whatsapp" onclick="connectSupportAgent('Technical Error')" style="border-radius:10px;">💬 Report Bug to Support</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. SELLER PORTAL -->
+    <div id="tab-seller" class="container tab-content">
+        <header class="hero" style="background: linear-gradient(135deg, #7c2d12, #c2410c);">
+            <h1>SELLER VENDOR PORTAL</h1>
+            <p>Register your unique Vendor ID or login to manage packaging and publish products live.</p>
+        </header>
+
+        <div id="sellerAuthBox" style="background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); max-width:500px; margin:0 auto 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <h3 style="font-size:1.2rem; font-weight:800; color:var(--primary-navy); margin-bottom:1rem;">Vendor Login / Registration</h3>
+            <div class="form-group"><label>Vendor ID</label><input type="text" id="sellerLoginId" placeholder="e.g. vendor_gumani_1"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="sellerLoginPass" placeholder="Enter password"></div>
+            <button class="btn btn-buy" style="border-radius:10px; padding:0.7rem;" onclick="handleSellerLoginOrRegister()">Login / Register Vendor ID</button>
+        </div>
+
+        <div id="sellerDashboardBox" style="display:none; background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); max-width:700px; margin:0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--gray-border); padding-bottom:0.8rem;">
+                <h3 style="font-size:1.1rem; color:var(--primary-navy);">Welcome, Vendor <span id="activeVendorDisplay" style="color:var(--accent-orange);"></span></h3>
+                <button class="btn" style="background:var(--danger); width:auto; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="logoutSeller()">Logout</button>
+            </div>
+
+            <div class="form-group"><label>Product Name</label><input type="text" id="sellerProductName" placeholder="e.g. Cotton T-Shirt"></div>
+            <div class="form-group">
+                <label>Select Category</label>
+                <select id="sellerCategory" onchange="autoDetectReturnPolicy(this.value)">
+                    <option value="Grocery">Groceries & Vegetables (Non-Returnable)</option>
+                    <option value="Food">Food & Restaurants (Non-Returnable)</option>
+                    <option value="Clothing">Clothing & Fashion (Returnable)</option>
+                    <option value="Electronics">Electronics & Mobiles (Returnable)</option>
+                    <option value="Services">Home Services (Non-Returnable)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Return Policy Status</label><input type="text" id="sellerReturnPolicy" value="Non-Returnable (Food/Grocery)" readonly style="background:#f1f5f9; font-weight:700;"></div>
+            <div class="form-group"><label>Full Description</label><textarea id="sellerProductDesc" rows="3" placeholder="Write specifications..."></textarea></div>
+            <div class="form-group"><label>Price (₹)</label><input type="text" id="sellerPrice" placeholder="₹120"></div>
+            
+            <div class="form-group">
+                <label>Delivery Fee Option</label>
+                <select id="sellerDeliveryType" onchange="toggleDeliveryFeeInput(this.value)">
+                    <option value="Free">✨ Free Delivery (₹0)</option>
+                    <option value="Custom">📦 Custom Delivery Fee</option>
+                </select>
+            </div>
+            <div class="form-group" id="customFeeGroup" style="display:none;">
+                <label>Delivery Charge Amount (₹)</label><input type="text" id="sellerCustomFee" placeholder="e.g. ₹20">
+            </div>
+
+            <div class="form-group"><label>Product Photo</label><input type="file" id="sellerImageFile" accept="image/*" style="padding:0.4rem; background:#f8fafc;"></div>
+            <button class="btn btn-buy" style="border-radius: 12px; padding: 0.8rem; margin-bottom: 2rem;" onclick="addNewProductBySeller()">Publish Live & Generate PDF QR Label 🔴</button>
+
+            <!-- Seller Packaging Control -->
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary-navy); margin-bottom:1rem; border-top:1px solid var(--gray-border); padding-top:1.5rem;">📦 Order Packaging & Preparation (Seller Controlled)</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer Item</th><th>Current Status</th><th>Update Packaging Status</th></tr></thead>
+                    <tbody id="sellerOrdersTable"></tbody>
+                </table>
+            </div>
+
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary-navy); margin-bottom:1rem; border-top:1px solid var(--gray-border); padding-top:1.5rem;">🏷️ Generated Shipping Labels & QR Codes</h3>
+            <div id="sellerLabelsContainer" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;"></div>
+        </div>
+    </div>
+
+    <!-- 6. DELIVERY PARTNER -->
+    <div id="tab-partner" class="container tab-content">
+        <h2 style="margin-bottom: 0.4rem; font-size: 1.3rem; font-weight: 700; color: var(--primary-navy);">Delivery Partner Portal</h2>
+        <p style="margin-bottom: 1.2rem; color: #64748b; font-size: 0.9rem;">Enter your exact assigned Partner Name to view assigned orders with delivery route address.</p>
+        
+        <div style="background:var(--white); padding:1.5rem; border-radius:16px; border:1px solid var(--gray-border); max-width:500px; margin-bottom:1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div class="form-group">
+                <label>Enter Your Partner Name (e.g. Ramesh Kumar)</label>
+                <input type="text" id="partnerLoginName" placeholder="Ramesh Kumar" oninput="loadPartnerDashboard()">
+            </div>
+        </div>
+
+        <div style="background:var(--white); padding:2rem; border-radius:16px; border:1px solid var(--gray-border); max-width:500px; margin-bottom:2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div class="form-group"><label>Select Your Assigned Order ID</label><select id="partnerOrderIdSelect"><option value="">-- Choose Your Order --</option></select></div>
+            
+            <div class="form-group">
+                <label>📷 Scan Package QR / Barcode ID</label>
+                <input type="text" id="scannedBarcodeId" placeholder="Scan or type Order ID (e.g. MZ-10002)" oninput="handleBarcodeScan(this.value)">
+            </div>
+
+            <div id="partnerRouteInfo" style="background:#f8fafc; padding:1rem; border-radius:12px; margin-bottom:1.2rem; border:1px dashed var(--gray-border); display:none;">
+                <p style="font-weight:700; color:var(--primary-navy); margin-bottom:0.3rem;">📍 Delivery Destination Route:</p>
+                <p id="routeAddressText" style="font-size:0.9rem; color:#334155; margin-bottom:0.5rem;"></p>
+                <a id="googleMapsLink" href="#" target="_blank" class="btn" style="background:#0284c7; padding:0.5rem; font-size:0.85rem; text-decoration:none; display:inline-block; border-radius:8px;">🗺️ Open Live Map Navigation</a>
+            </div>
+
+            <div id="partnerOtpBox" class="form-group">
+                <label>Enter Customer 4-Digit OTP (Prepaid Only)</label>
+                <input type="text" id="enteredOtp" placeholder="4821" maxlength="4" style="letter-spacing:3px; font-weight:bold;">
+            </div>
+            <button class="btn" style="background:var(--success); border-radius: 12px; padding: 0.8rem;" onclick="verifyAndCompleteDelivery()">Verify & Complete Delivery ✅</button>
+        </div>
+
+        <h3 style="margin-bottom: 0.8rem; font-weight: 700; font-size: 1.1rem;">Your Assigned Active Deliveries</h3>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Order ID</th><th>Item</th><th>Mode</th><th>Status</th><th>Delivery Address & Pincode</th></tr></thead>
+                <tbody id="partnerTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer-gumani">
+        <p><strong>MARTZO Local Super App</strong> — Serving <strong>Gumani, Jharkhand (Pincode: 816109)</strong> & Surrounding Areas.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.4rem; color: #64748b;">30-Minute Local Delivery Target | Everything You Need, One App.</p>
+    </div>
+
+    <script>
+        const SYNC_CHANNEL = new BroadcastChannel('martzo_cloud_sync');
+
+        function getCloudData(key) { return JSON.parse(localStorage.getItem(key)); }
+        function setCloudData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+            SYNC_CHANNEL.postMessage({ key: key, data: data });
+        }
+
+        SYNC_CHANNEL.onmessage = function(event) {
+            if (event.data.key === 'martzo_orders') { renderMyOrders(); loadPartnerDashboard(); if (activeVendorId) renderSellerOrders(); }
+            if (event.data.key === 'martzo_products') renderCustomerStore();
+            if (event.data.key === 'martzo_agents') renderSupportAgentsList();
+        };
+
+        if (!getCloudData('martzo_products')) {
+            setCloudData('martzo_products', [
+                { id: 1, name: "Fresh Farm Tomatoes (1kg)", category: "Grocery", desc: "Organic farm-fresh tomatoes.", price: "₹40", deliveryFee: "Free", returnPolicy: "Non-Returnable (Food/Grocery)", reviews: [], image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500" },
+                { id: 2, name: "Cotton Casual T-Shirt", category: "Clothing", desc: "Breathable 100% cotton casual wear.", price: "₹349", deliveryFee: "Free", returnPolicy: "7 Days Returnable", reviews: [{rating: 5, comment: "Superb quality!"}], image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" }
+            ]);
+        }
+        if (!getCloudData('martzo_cart')) setCloudData('martzo_cart', []);
+        if (!getCloudData('martzo_orders')) {
+            const now = new Date().toLocaleString();
+            setCloudData('martzo_orders', [
+                { id: 'MZ-10001', customerId: 'CUST-123456', item: 'Cotton Casual T-Shirt', price: '₹349', deliveryFee: 'Free', image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500', name: 'Rohit Sharma', phone: '9876543210', address: 'Gumani Main Road', pincode: '816109', paymentMode: 'Prepaid', status: 'CONFIRMED', partner: 'Ramesh Kumar', otp: '4821', timestamps: { placed: now, confirmed: now, preparing: null, outForDelivery: null, delivered: null } }
+            ]);
+        }
+        if (!getCloudData('martzo_agents')) setCloudData('martzo_agents', [{ name: "Rahul Support", phone: "919798377142" }]);
+        if (!getCloudData('martzo_vendors')) setCloudData('martzo_vendors', { "vendor_gumani_1": "pass123" });
+
+        let currentActiveCategory = 'All';
+        let selectedProductForDetail = null;
+        let pendingCheckoutItem = null;
+        let viewingOrderId = null;
+        let selectedStarRating = 0;
+        let currentCustomerId = null;
+        let activeVendorId = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedCustId = localStorage.getItem('martzo_active_cust_id');
+            if (savedCustId) {
+                currentCustomerId = savedCustId;
+                document.getElementById('customerUserBadge').innerText = `ID: ${savedCustId}`;
+                document.getElementById('customerProfileModal').classList.remove('show');
+            } else {
+                document.getElementById('customerProfileModal').classList.add('show');
+            }
+        });
+
+        function registerCustomerProfile() {
+            const name = document.getElementById('regCustomerName').value.trim();
+            const phone = document.getElementById('regCustomerPhone').value.trim();
+            if (!name || !phone || phone.length < 10) {
+                alert('Please enter your valid Name and 10-digit Mobile Number.');
+                return;
+            }
+            const custId = 'CUST-' + Math.floor(100000 + Math.random() * 900000);
+            currentCustomerId = custId;
+            localStorage.setItem('martzo_active_cust_id', custId);
+            document.getElementById('customerUserBadge').innerText = `ID: ${custId}`;
+            document.getElementById('customerProfileModal').classList.remove('show');
+            switchTab('customer');
+        }
+
+        function handleSellerLoginOrRegister() {
+            const vid = document.getElementById('sellerLoginId').value.trim();
+            const vpass = document.getElementById('sellerLoginPass').value.trim();
+            if (!vid || !vpass) return alert('Please enter Vendor ID and Password.');
+
+            let vendors = getCloudData('martzo_vendors') || {};
+            if (vendors[vid]) {
+                if (vendors[vid] === vpass) {
+                    startSellerSession(vid);
+                } else {
+                    alert('❌ Incorrect password for this Vendor ID.');
+                }
+            } else {
+                vendors[vid] = vpass;
+                setCloudData('martzo_vendors', vendors);
+                alert(`🎉 New Vendor ID "${vid}" registered successfully!`);
+                startSellerSession(vid);
+            }
+        }
+
+        function startSellerSession(vid) {
+            activeVendorId = vid;
+            document.getElementById('sellerAuthBox').style.display = 'none';
+            document.getElementById('sellerDashboardBox').style.display = 'block';
+            document.getElementById('activeVendorDisplay').innerText = vid;
+            renderSellerLabels();
+            renderSellerOrders();
+        }
+
+        function logoutSeller() {
+            activeVendorId = null;
+            document.getElementById('sellerDashboardBox').style.display = 'none';
+            document.getElementById('sellerAuthBox').style.display = 'block';
+            document.getElementById('sellerLoginId').value = '';
+            document.getElementById('sellerLoginPass').value = '';
+        }
+
+        function switchTab(tabId) {
+            if(!currentCustomerId && tabId !== 'seller') {
+                document.getElementById('customerProfileModal').classList.add('show');
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-links button').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if(document.getElementById('btn-' + tabId)) document.getElementById('btn-' + tabId).classList.add('active');
+
+            if (tabId === 'customer') renderCustomerStore();
+            if (tabId === 'cart') renderCartPage();
+            if (tabId === 'myorders') renderMyOrders();
+            if (tabId === 'seller' && activeVendorId) { renderSellerLabels(); renderSellerOrders(); }
+            if (tabId === 'partner') loadPartnerDashboard();
+        }
+
+        function filterStoreCategory(cat, btnElement) {
+            currentActiveCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btnElement.classList.add('active-cat');
+            document.getElementById('currentCategoryTitle').innerText = cat === 'All' ? 'All Products' : btnElement.innerText;
+            renderCustomerStore();
+        }
+
+        function renderCustomerStore() {
+            const products = getCloudData('martzo_products');
+            const grid = document.getElementById('customerProductGrid');
+            const filtered = currentActiveCategory === 'All' ? products : products.filter(p => p.category === currentActiveCategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:#64748b; background:#fff; border-radius:10px;">No products in this category.</div>`;
+                updateCartUI();
+                return;
+            }
+
+            grid.innerHTML = filtered.map((p) => {
+                const avgRating = p.reviews && p.reviews.length > 0 ? (p.reviews.reduce((s, r) => s + r.rating, 0) / p.reviews.length).toFixed(1) : 'No ratings';
+                return `
+                    <div class="card" onclick="openProductDetail(${p.id})">
+                        <div class="card-img"><img src="${p.image}" alt="${p.name}"></div>
+                        <div class="card-body">
+                            <div style="font-size:0.65rem; font-weight:700; color:var(--accent-purple); text-transform:uppercase; margin-bottom:0.1rem;">${p.category}</div>
+                            <div class="card-title">${p.name}</div>
+                            <div class="card-desc">${p.desc || 'Quality item'}</div>
+                            <div style="font-size:0.75rem; color:#f59e0b; font-weight:700; margin-bottom:0.4rem;">⭐ ${avgRating} ${p.reviews ? `(${p.reviews.length})` : ''}</div>
+                            <div class="price">${p.price}</div>
+                            <div class="button-group" onclick="event.stopPropagation()">
+                                <button class="btn btn-cart" onclick="addToCart('${p.name}', '${p.price}', '${p.deliveryFee}', '${p.image}')">Cart</button>
+                                <button class="btn btn-buy" onclick="openBuyNowModal('${p.name}', '${p.price}', '${p.deliveryFee}', '${p.image}')">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            updateCartUI();
+        }
+
+        function openProductDetail(productId) {
+            const products = getCloudData('martzo_products');
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            selectedProductForDetail = product;
+            document.getElementById('detailImg').src = product.image;
+            document.getElementById('modalProductCat').innerText = product.category;
+            document.getElementById('modalReturnBadge').innerText = product.returnPolicy || 'Non-Returnable';
+            document.getElementById('detailTitle').innerText = product.name;
+            document.getElementById('detailPrice').innerText = product.price;
+            document.getElementById('detailDeliveryFee').innerText = product.deliveryFee === 'Free' ? '✨ Free Delivery in Gumani' : `📦 Delivery Fee: ${product.deliveryFee}`;
+            document.getElementById('detailDesc').innerText = product.desc || 'No detailed description provided by seller.';
+            
+            const revList = document.getElementById('productReviewsList');
+            if (!product.reviews || product.reviews.length === 0) {
+                revList.innerHTML = "No customer ratings yet.";
+            } else {
+                revList.innerHTML = product.reviews.map(r => `
+                    <div style="border-bottom:1px solid var(--gray-border); padding:0.3rem 0; font-size:0.8rem;">
+                        <span>⭐ ${r.rating}/5</span> — <span style="color:#334155;">${r.comment || 'Good product'}</span>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('productDetailModal').classList.add('show');
+        }
+
+        function closeProductDetailModal() {
+            document.getElementById('productDetailModal').classList.remove('show');
+        }
+
+        function autoDetectReturnPolicy(cat) {
+            const polInput = document.getElementById('sellerReturnPolicy');
+            if (cat === 'Grocery' || cat === 'Food' || cat === 'Services') {
+                polInput.value = 'Non-Returnable (Food/Grocery)';
+            } else {
+                polInput.value = '7 Days Returnable / Replaceable';
+            }
+        }
+
+        function addCurrentProductToCartFromModal() {
+            if (selectedProductForDetail) {
+                addToCart(selectedProductForDetail.name, selectedProductForDetail.price, selectedProductForDetail.deliveryFee, selectedProductForDetail.image);
+                closeProductDetailModal();
+            }
+        }
+
+        function buyCurrentProductFromModal() {
+            if (selectedProductForDetail) {
+                closeProductDetailModal();
+                openBuyNowModal(selectedProductForDetail.name, selectedProductForDetail.price, selectedProductForDetail.deliveryFee, selectedProductForDetail.image);
+            }
+        }
+
+        function addToCart(name, price, deliveryFee, image) {
+            const cart = getCloudData('martzo_cart');
+            cart.push({ name, price, deliveryFee: deliveryFee || 'Free', image: image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500' });
+            setCloudData('martzo_cart', cart);
+            updateCartUI();
+            alert(`🛒 "${name}" added to cart!`);
+        }
+
+        function updateCartUI() {
+            const cart = getCloudData('martzo_cart');
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('cartBadgeCount').innerText = cart.length;
+        }
+
+        function renderCartPage() {
+            const cart = getCloudData('martzo_cart');
+            const container = document.getElementById('cartItemsContainer');
+            const checkoutSec = document.getElementById('cartCheckoutSec');
+
+            if (cart.length === 0) {
+                container.innerHTML = "Your cart is empty. Shop now from storefront!";
+                checkoutSec.style.display = 'none';
+            } else {
+                container.innerHTML = cart.map((item, idx) => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem 0; border-bottom:1px solid var(--gray-border);">
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <img src="${item.image}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                            <div>
+                                <h4 style="font-size:0.95rem; color:var(--primary-navy);">${item.name}</h4>
+                                <p style="font-size:0.8rem; color:#64748b;">Delivery: ${item.deliveryFee}</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <strong>${item.price}</strong>
+                            <button class="btn" style="background:var(--danger); width:auto; padding:0.3rem 0.6rem; font-size:0.75rem; border-radius:6px;" onclick="removeFromCart(${idx})">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                const itemTotal = cart.reduce((sum, item) => sum + parseInt(item.price.replace('₹','').replace(/[^0-9]/g, '') || 0), 0);
+                document.getElementById('fullCartTotal').innerText = '₹' + itemTotal;
+                checkoutSec.style.display = 'block';
+            }
+        }
+
+        function removeFromCart(index) {
+            const cart = getCloudData('martzo_cart');
+            cart.splice(index, 1);
+            setCloudData('martzo_cart', cart);
+            renderCartPage();
+            updateCartUI();
+        }
+
+        function openBuyNowModal(name, price, deliveryFee, image) {
+            pendingCheckoutItem = { type: 'single', items: [{ name, price, deliveryFee: deliveryFee || 'Free', image: image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500' }], total: price, deliveryFee: deliveryFee || 'Free' };
+            document.getElementById('checkoutItemName').innerText = name;
+            document.getElementById('checkoutItemPrice').innerText = price;
+            document.getElementById('checkoutDeliveryFeeText').innerText = deliveryFee === 'Free' ? 'Free' : deliveryFee;
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        function openCartCheckoutModal() {
+            const cart = getCloudData('martzo_cart');
+            if (cart.length === 0) return;
+            const itemTotal = cart.reduce((sum, item) => sum + parseInt(item.price.replace('₹','').replace(/[^0-9]/g, '') || 0), 0);
+            
+            let maxDelivery = 'Free';
+            cart.forEach(c => { if(c.deliveryFee !== 'Free') maxDelivery = c.deliveryFee; });
+
+            pendingCheckoutItem = { type: 'cart', items: cart, total: '₹' + itemTotal, deliveryFee: maxDelivery };
+            document.getElementById('checkoutItemName').innerText = `${cart.length} Item(s) in Cart`;
+            document.getElementById('checkoutItemPrice').innerText = '₹' + itemTotal;
+            document.getElementById('checkoutDeliveryFeeText').innerText = maxDelivery === 'Free' ? 'Free' : maxDelivery;
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('show');
+        }
+
+        function showCustomAlert(message) {
+            document.getElementById('errorModalText').innerText = message;
+            document.getElementById('errorModal').classList.add('show');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('show');
+        }
+
+        function confirmAndSendWhatsApp() {
+            const name = document.getElementById('checkoutName').value.trim();
+            const phone = document.getElementById('checkoutPhone').value.trim();
+            const address = document.getElementById('checkoutAddress').value.trim();
+            const pincode = document.getElementById('checkoutPincode').value.trim();
+            const paymentMode = document.getElementById('checkoutPaymentMode').value;
+
+            if (!name) { showCustomAlert('⚠️ Please enter your Full Name.'); return; }
+            if (!phone || phone.length < 10) { showCustomAlert('📱 Please enter a valid WhatsApp Mobile Number.'); return; }
+            if (!address) { showCustomAlert('📍 Delivery Address is missing!'); return; }
+            if (!pincode || pincode.length !== 6) { showCustomAlert('📮 Please enter a valid 6-digit Pincode (e.g., 816109).'); return; }
+
+            const orders = getCloudData('martzo_orders');
+            const newId = 'MZ-' + (10000 + orders.length + 1);
+            const randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            const currentTime = new Date().toLocaleString();
+
+            pendingCheckoutItem.items.forEach(item => {
+                orders.push({
+                    id: newId,
+                    customerId: currentCustomerId,
+                    item: item.name,
+                    price: item.price,
+                    deliveryFee: pendingCheckoutItem.deliveryFee,
+                    image: item.image,
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    pincode: pincode,
+                    paymentMode: paymentMode,
+                    status: 'NEW',
+                    partner: 'Unassigned',
+                    otp: randomOtp,
+                    timestamps: { placed: currentTime, confirmed: null, preparing: null, outForDelivery: null, delivered: null }
+                });
+            });
+
+            setCloudData('martzo_orders', orders);
+            if (pendingCheckoutItem.type === 'cart') {
+                setCloudData('martzo_cart', []);
+                updateCartUI();
+            }
+            closeCheckoutModal();
+
+            const agents = getCloudData('martzo_agents');
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)] || { name: "Support", phone: "919798377142" };
+
+            const itemsText = pendingCheckoutItem.items.map(i => `${i.name} (${i.price})`).join(', ');
+            let whatsappUrl = "";
+            let successText = "";
+
+            if (paymentMode === 'Prepaid') {
+                const whatsappMsg = `Hello MARTZO! Order ID *${newId}* (Prepaid).\nItems: ${itemsText}\nTotal: ${pendingCheckoutItem.total}\nName: ${name}\nAddress: ${address} - ${pincode}\nPlease share payment QR.`;
+                whatsappUrl = `https://wa.me/${randomAgent.phone}?text=${encodeURIComponent(whatsappMsg)}`;
+                successText = `Order <strong>${newId}</strong> registered (Prepaid)!<br>Send payment screenshot on WhatsApp to agent <strong>${randomAgent.name}</strong>.`;
+                document.getElementById('whatsappBox').style.display = 'block';
+                document.getElementById('whatsappPayBtn').href = whatsappUrl;
+            } else {
+                successText = `Order <strong>${newId}</strong> registered with <strong>Cash on Delivery (COD)</strong>!<br>Pay cash upon delivery in Gumani.`;
+                document.getElementById('whatsappBox').style.display = 'none';
+            }
+
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+            document.getElementById('successModalText').innerHTML = successText;
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeSuccessModalAndOpenMyOrders() {
+            document.getElementById('successModal').classList.remove('show');
+            switchTab('myorders');
+        }
+
+        function connectSupportAgent(issueType) {
+            const agents = getCloudData('martzo_agents');
+            if (!agents || agents.length === 0) { alert('No support agents configured.'); return; }
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+            window.open(`https://wa.me/${randomAgent.phone}?text=${encodeURIComponent('Hello, I need assistance regarding ' + issueType)}`, '_blank');
+        }
+
+        function toggleDeliveryFeeInput(val) {
+            document.getElementById('customFeeGroup').style.display = val === 'Custom' ? 'block' : 'none';
+        }
+
+        // --- SELLER PACKAGING & LABEL GENERATION ---
+        function addNewProductBySeller() {
+            if (!activeVendorId) return alert('Please login with your Vendor ID first.');
+            const name = document.getElementById('sellerProductName').value.trim();
+            const category = document.getElementById('sellerCategory').value;
+            const returnPolicy = document.getElementById('sellerReturnPolicy').value;
+            const desc = document.getElementById('sellerProductDesc').value.trim();
+            const price = document.getElementById('sellerPrice').value.trim();
+            const deliveryType = document.getElementById('sellerDeliveryType').value;
+            const customFee = document.getElementById('sellerCustomFee').value.trim();
+            const fileInput = document.getElementById('sellerImageFile');
+
+            if (!name || !price) return alert('Enter name and price.');
+
+            const finalDeliveryFee = deliveryType === 'Free' ? 'Free' : (customFee || '₹20');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { saveProductAndLabel(name, category, returnPolicy, desc, price, finalDeliveryFee, e.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveProductAndLabel(name, category, returnPolicy, desc, price, finalDeliveryFee, "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500");
+            }
+        }
+
+        function saveProductAndLabel(name, category, returnPolicy, desc, price, deliveryFee, image) {
+            const products = getCloudData('martzo_products');
+            const newProd = {
+                id: products.length + 1,
+                vendorId: activeVendorId,
+                name, category, returnPolicy, desc,
+                price: price.includes('₹') ? price : '₹' + price,
+                deliveryFee, reviews: [], image
+            };
+            products.push(newProd);
+            setCloudData('martzo_products', products);
+
+            let labels = getCloudData('martzo_labels') || [];
+            labels.push({
+                sku: 'SKU-' + Math.floor(1000 + Math.random() * 9000),
+                name, price, deliveryFee, returnPolicy, vendor: activeVendorId
+            });
+            setCloudData('martzo_labels', labels);
+
+            alert(`🎉 Product published live & Shipping Label generated!`);
+            renderSellerLabels();
+            renderSellerOrders();
+            switchTab('customer');
+        }
+
+        function renderSellerLabels() {
+            const labels = getCloudData('martzo_labels') || [];
+            const myLabels = labels.filter(l => l.vendor === activeVendorId);
+            const container = document.getElementById('sellerLabelsContainer');
+
+            if (myLabels.length === 0) {
+                container.innerHTML = `<p style="color:#64748b; font-size:0.9rem;">No shipping labels generated yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = myLabels.map(l => `
+                <div style="background:#f8fafc; border:1px solid var(--gray-border); border-radius:12px; padding:1.2rem; font-size:0.85rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <strong>📦 ${l.name}</strong>
+                        <span class="badge" style="background:#dbeafe; color:#1e40af;">${l.sku}</span>
+                    </div>
+                    <p>Price: <strong>${l.price}</strong> | Delivery: ${l.deliveryFee}</p>
+                    <p style="color:#64748b; margin-bottom:0.8rem;">Policy: ${l.returnPolicy} | Hub: Gumani (816109)</p>
+                    <div style="background:white; border:1px dashed var(--gray-border); padding:0.5rem; text-align:center; border-radius:6px; margin-bottom:0.8rem; font-family:monospace; font-size:0.75rem;">
+                        [ QR BARCODE: ${l.sku}-${l.vendor} ]
+                    </div>
+                    <button class="btn" style="background:var(--primary-navy); padding:0.4rem; font-size:0.8rem;" onclick="alert('📥 PDF Shipping Label downloaded for SKU: ${l.sku}')">Download PDF Label 🖨️</button>
+                </div>
+            `).join('');
+        }
+
+        function renderSellerOrders() {
+            const orders = getCloudData('martzo_orders');
+            const tbody = document.getElementById('sellerOrdersTable');
+            tbody.innerHTML = orders.map((o, idx) => `
+                <tr>
+                    <td><strong>${o.id}</strong></td>
+                    <td>${o.item} (${o.price})<br><small>${o.name}</small></td>
+                    <td><span class="badge">${o.status}</span></td>
+                    <td>
+                        <select onchange="updateSellerPackaging(${idx}, this.value)" style="padding:0.3rem; border-radius:4px; font-size:0.85rem;">
+                            <option value="">Update Packaging...</option>
+                            <option value="CONFIRMED">1. Confirm Order</option>
+                            <option value="PREPARING">2. Preparing / Packed</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateSellerPackaging(index, status) {
+            if (!status) return;
+            const orders = getCloudData('martzo_orders');
+            const now = new Date().toLocaleString();
+            orders[index].status = status;
+            if (!orders[index].timestamps) orders[index].timestamps = {};
+            if (status === 'CONFIRMED') orders[index].timestamps.confirmed = now;
+            if (status === 'PREPARING') orders[index].timestamps.preparing = now;
+
+            setCloudData('martzo_orders', orders);
+            renderSellerOrders();
+            renderMyOrders();
+            alert(`Packaging status updated to: ${status}`);
+        }
+
+        // --- MY ORDERS SECTION ---
+        function renderMyOrders() {
+            const orders = getCloudData('martzo_orders');
+            const container = document.getElementById('myOrdersContainer');
+            const myOrders = currentCustomerId ? orders.filter(o => o.customerId === currentCustomerId || !o.customerId) : orders;
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `<div style="background:#fff; padding:2rem; text-align:center; border-radius:10px; color:#64748b;">No orders placed yet.</div>`;
+                return;
+            }
+
+            const grouped = {};
+            myOrders.forEach(o => {
+                if (!grouped[o.id]) grouped[o.id] = { ...o, items: [] };
+                grouped[o.id].items.push({ name: o.item, price: o.price, image: o.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500' });
+            });
+
+            container.innerHTML = Object.values(grouped).map(ord => {
+                let badgeStyle = ord.status === 'DELIVERED' ? 'background-color:#d1fae5; color:#065f46;' : (ord.status === 'CANCELLED' ? 'background-color:#fee2e2; color:#991b1b;' : 'background-color:#dbeafe; color:#1e40af;');
+                const firstItem = ord.items[0];
+
+                return `
+                    <div class="order-list-item" onclick="openOrderDetailsModal('${ord.id}')">
+                        <div class="order-item-left">
+                            <div class="order-thumb-sm"><img src="${firstItem.image}" alt="${firstItem.name}"></div>
+                            <div>
+                                <h4 style="font-size:0.95rem; font-weight:700; color:var(--primary-navy);">${firstItem.name} ${ord.items.length > 1 ? `(+${ord.items.length - 1} more)` : ''}</h4>
+                                <p style="font-size:0.75rem; color:#64748b;">ID: <strong>${ord.id}</strong> | Placed: ${ord.timestamps?.placed || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge" style="${badgeStyle}">${ord.status}</span>
+                            <p style="font-size:0.7rem; color:#94a3b8; margin-top:0.2rem;">Tap to track ➔</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openOrderDetailsModal(orderId) {
+            const orders = getCloudData('martzo_orders');
+            const ord = orders.find(o => o.id === orderId);
+            if (!ord) return;
+
+            viewingOrderId = orderId;
+            document.getElementById('modalOrderId').innerText = `Order ID: ${ord.id}`;
+            document.getElementById('modalOrderDate').innerText = `Placed on: ${ord.timestamps?.placed || 'N/A'}`;
+            document.getElementById('modalOrderStatusBadge').innerHTML = `<span class="badge">${ord.status}</span>`;
+            document.getElementById('modalOrderImg').src = ord.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500';
+            document.getElementById('modalOrderItemName').innerText = ord.item;
+            document.getElementById('modalOrderPrice').innerText = ord.price;
+            document.getElementById('modalOrderMode').innerHTML = `<span class="badge" style="background:#e0e7ff; color:#3730a3;">${ord.paymentMode}</span>`;
+            document.getElementById('modalOrderAddress').innerText = `${ord.name}, ${ord.address} - Pincode: ${ord.pincode}`;
+            document.getElementById('modalOrderPartner').innerText = ord.partner;
+
+            const otpContainer = document.getElementById('modalOtpContainer');
+            if (ord.paymentMode === 'Prepaid' && (ord.status === 'OUT_FOR_DELIVERY' || ord.status === 'DELIVERED')) {
+                document.getElementById('modalOrderOtp').innerText = ord.otp;
+                otpContainer.style.display = 'block';
+            } else {
+                otpContainer.style.display = 'none';
+            }
+
+            const customerCancelSec = document.getElementById('modalCustomerCancelSection');
+            customerCancelSec.style.display = (ord.status === 'NEW' || ord.status === 'CONFIRMED') ? 'block' : 'none';
+
+            const ratingSec = document.getElementById('modalRatingSection');
+            if (ord.status === 'DELIVERED') {
+                ratingSec.style.display = 'block';
+                selectedStarRating = 0;
+                highlightStars(0);
+                document.getElementById('reviewCommentText').value = '';
+            } else {
+                ratingSec.style.display = 'none';
+            }
+
+            const t = ord.timestamps || {};
+            const statuses = ['NEW', 'CONFIRMED', 'PREPARING', 'PARTNER_ASSIGNED', 'OUT_FOR_DELIVERY', 'DELIVERED'];
+            let currentIdx = statuses.indexOf(ord.status);
+            if (ord.status === 'CANCELLED') currentIdx = -1;
+
+            const timelineEl = document.getElementById('modalTimelineContainer');
+            if (ord.status === 'CANCELLED') {
+                timelineEl.innerHTML = `<div style="color:var(--danger); font-weight:700; text-align:center; padding:1rem;">❌ This order has been CANCELLED.</div>`;
+            } else {
+                timelineEl.innerHTML = `
+                    <div class="v-step ${currentIdx >= 0 ? 'completed' : ''}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Order Placed <span class="vehicle-icon-move">${currentIdx === 0 ? '📦' : ''}</span></div>
+                        <div class="v-time">${t.placed || 'Pending'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 1 ? 'completed' : (currentIdx === 1 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Order Confirmed <span class="vehicle-icon-move">${currentIdx === 1 ? '✅' : ''}</span></div>
+                        <div class="v-time">${t.confirmed || 'Pending'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 2 ? 'completed' : (currentIdx === 2 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Preparing & Packed <span class="vehicle-icon-move">${currentIdx === 2 ? '📦' : ''}</span></div>
+                        <div class="v-time">${t.preparing || 'In progress'}</div>
+                    </div>
+                    <div class="v-step ${currentIdx >= 4 ? 'completed' : (currentIdx === 4 ? 'active' : '')}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Out for Delivery <span class="vehicle-icon-move">${currentIdx === 4 ? '🛵' : ''}</span></div>
+                        <div class="v-time">${t.outForDelivery || 'Awaiting dispatch'}</div>
+                    </div>
+                    <div class="v-step ${ord.status === 'DELIVERED' ? 'completed' : ''}">
+                        <div class="v-dot"></div>
+                        <div class="v-title">Delivered <span class="vehicle-icon-move">${ord.status === 'DELIVERED' ? '🏁' : ''}</span></div>
+                        <div class="v-time">${t.delivered || 'Estimated 30 mins'}</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('orderDetailsModal').classList.add('show');
+        }
+
+        function closeOrderDetailsModal() {
+            document.getElementById('orderDetailsModal').classList.remove('show');
+        }
+
+        function customerCancelOrder() {
+            const orders = getCloudData('martzo_orders');
+            const ord = orders.find(o => o.id === viewingOrderId);
+            if (!ord) return;
+
+            if (ord.status !== 'NEW' && ord.status !== 'CONFIRMED') {
+                showCustomAlert('❌ Order cannot be cancelled now as preparation has already started.');
+                return;
+            }
+
+            if (confirm('Are you sure you want to cancel this order?')) {
+                orders.forEach(o => { if (o.id === viewingOrderId) o.status = 'CANCELLED'; });
+                setCloudData('martzo_orders', orders);
+                closeOrderDetailsModal();
+                renderMyOrders();
+                alert('Order successfully cancelled.');
+            }
+        }
+
+        function setRating(stars) {
+            selectedStarRating = stars;
+            highlightStars(stars);
+        }
+
+        function highlightStars(count) {
+            const starButtons = document.querySelectorAll('#starRatingContainer .star-rating-btn');
+            starButtons.forEach((btn, idx) => {
+                if (idx < count) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function submitProductReview() {
+            const comment = document.getElementById('reviewCommentText').value.trim();
+            if (!comment) { showCustomAlert('✍️ Please write a short review before submitting!'); return; }
+            if (selectedStarRating === 0) { showCustomAlert('⭐ Please tap on stars to rate.'); return; }
+
+            const orders = getCloudData('martzo_orders');
+            const ord = orders.find(o => o.id === viewingOrderId);
+            if (!ord) return;
+
+            const products = getCloudData('martzo_products');
+            const prod = products.find(p => p.name.toLowerCase() === ord.item.toLowerCase());
+
+            if (prod) {
+                if (!prod.reviews) prod.reviews = [];
+                prod.reviews.push({ rating: selectedStarRating, comment: comment });
+                setCloudData('martzo_products', products);
+            }
+
+            alert('⭐ Thank you! Your review and rating have been successfully posted.');
+            document.getElementById('reviewCommentText').value = '';
+            closeOrderDetailsModal();
+            renderCustomerStore();
+        }
+
+        // --- DELIVERY PARTNER SCANNER & ROUTING ---
+        function loadPartnerDashboard() {
+            const partnerInput = document.getElementById('partnerLoginName').value.trim().toLowerCase();
+            const orders = getCloudData('martzo_orders');
+            
+            const assignedOrders = orders.filter(o => {
+                if (o.status === 'DELIVERED' || o.status === 'CANCELLED') return false;
+                if (!partnerInput) return false;
+                return o.partner.toLowerCase().includes(partnerInput);
+            });
+
+            const selectEl = document.getElementById('partnerOrderIdSelect');
+            selectEl.innerHTML = `<option value="">-- Choose Your Order --</option>` + assignedOrders.map(o => `<option value="${o.id}">${o.id} - ${o.item} (${o.name} - ${o.paymentMode})</option>`).join('');
+
+            selectEl.onchange = function() {
+                onPartnerOrderSelect(this.value);
+            };
+
+            const tbody = document.getElementById('partnerTableBody');
+            if (assignedOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No active orders assigned to "${document.getElementById('partnerLoginName').value || '---'}".</td></tr>`;
+            } else {
+                tbody.innerHTML = assignedOrders.map(o => `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${o.item}</td>
+                        <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${o.paymentMode}</span></td>
+                        <td><span class="badge">${o.status}</span></td>
+                        <td>${o.address} - <strong>${o.pincode}</strong> (${o.phone})</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function handleBarcodeScan(scannedText) {
+            const trimmed = scannedText.trim();
+            const selectEl = document.getElementById('partnerOrderIdSelect');
+            for (let i = 0; i < selectEl.options.length; i++) {
+                if (selectEl.options[i].value === trimmed) {
+                    selectEl.selectedIndex = i;
+                    onPartnerOrderSelect(trimmed);
+                    break;
+                }
+            }
+        }
+
+        function onPartnerOrderSelect(orderId) {
+            const orders = getCloudData('martzo_orders');
+            const selectedOrd = orders.find(x => x.id === orderId);
+            const routeBox = document.getElementById('partnerRouteInfo');
+            const routeText = document.getElementById('routeAddressText');
+            const mapsBtn = document.getElementById('googleMapsLink');
+            const otpBox = document.getElementById('partnerOtpBox');
+
+            if (selectedOrd) {
+                routeText.innerHTML = `<strong>${selectedOrd.name}</strong> (${selectedOrd.phone})<br>${selectedOrd.address} — <strong>Pincode: ${selectedOrd.pincode}</strong>`;
+                const mapsQuery = encodeURIComponent(`Gumani Jharkhand to ${selectedOrd.address} ${selectedOrd.pincode}`);
+                mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+                routeBox.style.display = 'block';
+
+                if (selectedOrd.paymentMode === 'COD') {
+                    otpBox.style.display = 'none';
+                } else {
+                    otpBox.style.display = 'block';
+                }
+            } else {
+                routeBox.style.display = 'none';
+            }
+        }
+
+        function verifyAndCompleteDelivery() {
+            const partnerInput = document.getElementById('partnerLoginName').value.trim();
+            const selectedId = document.getElementById('partnerOrderIdSelect').value;
+            const otp = document.getElementById('enteredOtp').value.trim();
+
+            if (!partnerInput) return showCustomAlert('⚠️ Please enter your Partner Name at the top first.');
+            if (!selectedId) return showCustomAlert('📦 Please select an order from the dropdown.');
+
+            const orders = getCloudData('martzo_orders');
+            const order = orders.find(o => o.id === selectedId);
+
+            if (!order) return alert('Order not found.');
+            if (order.status !== 'OUT_FOR_DELIVERY') return showCustomAlert('❌ Order must be marked "Out for Delivery" by admin first.');
+
+            const now = new Date().toLocaleString();
+            if (order.paymentMode === 'COD') {
+                order.status = 'DELIVERED';
+                if (!order.timestamps) order.timestamps = {};
+                order.timestamps.delivered = now;
+                setCloudData('martzo_orders', orders);
+                loadPartnerDashboard();
+                renderMyOrders();
+                alert(`🎉 COD Order ${order.id} Delivered Successfully! Cash collected.`);
+            } else {
+                if (order.otp === otp) {
+                    order.status = 'DELIVERED';
+                    if (!order.timestamps) order.timestamps = {};
+                    order.timestamps.delivered = now;
+                    setCloudData('martzo_orders', orders);
+                    loadPartnerDashboard();
+                    renderMyOrders();
+                    alert(`🎉 Prepaid Order ${order.id} Delivered Successfully via OTP verification!`);
+                    document.getElementById('enteredOtp').value = '';
+                } else {
+                    showCustomAlert('❌ Wrong Code / Invalid OTP for Prepaid order!');
+                }
+            }
+        }
+
+        renderCustomerStore();
+    </script>
+</body>
+</html>
